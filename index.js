@@ -1,62 +1,55 @@
 import express from "express"
 import utils from "./utils.js"
-import fs from 'fs'
+import cors from "cors"
 import ip from "ip"
 
 
-import playerMod from "./players.js"
+import playerFactory from "./players.js"
 
 
-const PORT = 8082
-const ipaddr = ip.address()
-const fullAddress = `http:\\\\${ipaddr}:${PORT}`
-const app = express()
+let PORT = 8082
+let ipaddr = ip.address()
+let fullAddress = `http:\\\\${ipaddr}:${PORT}`
+
+let app = express()
+app.use(cors())
 
 
-if (fs.existsSync('./test.jpg')) {
-  fs.unlinkSync('./test.jpg')
-}
-
-let qr = utils.createQr('./test.jpg', fullAddress)
-
-// console.log(uts);
+let qr = utils.createQr('./src/img/qr.jpg', fullAddress)
 
 
-// const apiFolder = path.resolve('static')
-// app.use(express.static(apiFolder))
+let avatars = './mocks/avatars.json'
+let nicknames = './mocks/nickNames.json'
+let colors = './mocks/colors.json'
 
-
-const avatars = './mocks/avatars.json'
-const nicknames = './mocks/nickNames.json'
-const colors = './mocks/colors.json'
-
-let plMod  = new playerMod(avatars, nicknames, colors)
-
-let playersIP = []
+playerFactory.initMocks(avatars, nicknames, colors)
 
 
 
 
-app.listen(8082) 
+app.listen(PORT) 
+
+
+
+app.get('/api/getLogin', (req, res) => {
+  let nick = playerFactory.getFreeLogin()
+  res.send(nick)
+})
 
 
 app.get('/', (req, res) => {
   let ipaddr, alreadyInGame, player
 
   ipaddr = req.connection.remoteAddress
-  alreadyInGame = playersIP.indexOf(ipaddr)
 
-  if (alreadyInGame != -1) {
-    res.send('ТЫ УЖЕ ИГРАЕШЬ')
-    return
-  }
+  // if (alreadyInGame != -1) {
+  //   res.send('ТЫ УЖЕ ИГРАЕШЬ')
+    // return
+  // }
 
-  player = plMod.createPlayer(ipaddr)
-  playersIP.push(ipaddr)
-  plMod.players.push(player)
+  // player = plMod.createPlayer(ipaddr)
 
-
-  res.send(player)
+  res.send('HELLO!!!')
 })
 
 
