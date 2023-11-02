@@ -1,6 +1,3 @@
-class game {
-
-}
-
+const game = {}
 
 export default game
