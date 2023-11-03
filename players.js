@@ -2,21 +2,27 @@ import fs from "fs"
 
 
 const playerList = {
-  avatars   : null,
+  avatars   : [],
   nicknames : null,
   colors    : null,
   players   : {},
 
 
-  initMocks () {
-    let nickNamesPath = './mocks/nickNames.json'
-    let colorsPath = './mocks/colors.json'
-    let colorsRes  = fs.readFileSync(colorsPath)
-    let nickRes    = fs.readFileSync(nickNamesPath)
-    
+  initMocks (backAddress) {
+    let nickNamesPath, nickRes, avaFolder,
+    avaPath, symLink, avatars
+
+    nickNamesPath = './mocks/nickNames.json'
+    nickRes    = fs.readFileSync(nickNamesPath)
     this.nicknames = JSON.parse(nickRes)
-    this.colors    = JSON.parse(colorsRes)
-    this.avatars = fs.readdirSync('./src/icons/avatars/')
+
+    symLink = 'icons/avatars'
+    avaPath = `./public/${symLink}/`
+    avaFolder = fs.readdirSync(avaPath)
+
+    for (let img of avaFolder) {
+      this.avatars.push(`${backAddress}/${symLink}/${img}`)
+    }
 
     this.shuffleArray(this.avatars)
     this.shuffleArray(this.nicknames)
@@ -33,34 +39,28 @@ const playerList = {
   },
 
 
-  createPlayer (ipaddress, nickName) {
+  createPlayer (ipaddress, nickname) {
     let isAdmin = ipaddress == "::1"
     let avatar  = this.avatars.pop()
-    let colorID = this.getRandInt(this.colors.length)
-    let color   = this.colors[colorID]
-    let player = {avatar, login: nickName, color, ipaddress, isAdmin}
+    let player = {avatar, nickname, ipaddress, isAdmin}
     return player
   },
 
 
-  addPlayer (req, res) {
-    let ipaddress, inGame, nickName,
-    player
+  addPlayer (ipaddress, nickname) {
+    let inGame, player, noNickname
 
-    ipaddress = req.connection.address().address
     inGame = this.checkPlayer(ipaddress)
+    noNickname = nickname == undefined
     
-    if (inGame) { 
-      res.send(false)
-      return false
-    }
+    if (inGame) { return false }
+    if (noNickname) { nickname = this.getFreeNickName() }
+
     
-    nickName = req.query.nickname || this.getFreeNickName()
-    player = this.createPlayer(ipaddress, nickName)
+    player = this.createPlayer(ipaddress, nickname)
     this.players[ipaddress] = player
 
-    console.log(this.players);
-    res.send(player)
+    return player
   },
 
 
@@ -75,8 +75,8 @@ const playerList = {
     return this.players.hasOwnProperty(ipaddress)
   },
 
-  getPlayersTable (req, res) {
-    res.send(this.players)
+  getPlayersTable () {
+    return this.players
   },
 }
 
