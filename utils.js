@@ -11,5 +11,11 @@ async function createQr (path, data) {
 }
 
 
+function checkAdmin (serverIP, userIP) {
+  let isAdmin = userIP == "::1" || userIP.includes(serverIP)
+  return isAdmin
+}
 
-export default {createQr}
+
+
+export default {createQr, checkAdmin}

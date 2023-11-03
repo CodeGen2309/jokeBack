@@ -1,4 +1,4 @@
-[
+const nicknames = [
   "Творидобробро",
   "ЦbIGAN",
   "ТвойСантехник",
@@ -516,3 +516,6 @@
   "Anen",
   "Фрося_Бурлакова"
 ]
+
+
+export default nicknames

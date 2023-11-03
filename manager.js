@@ -1,10 +1,13 @@
 const manager = {
-  currScene: 'lobby',
+  currStage: {
+    admin: 'lobby',
+    player: 'auth'
+  },
 
-  scenes: {
+  stages: {
     'startScreen': {
       admin: 'lobby',
-      player: 'lobbyMobile'
+      player: 'auth'
     },
 
     'AskQuestions': {
@@ -16,7 +19,6 @@ const manager = {
     'voting': {
       admin: '',
       player: '',
-
     },
 
     'waitPlayers': {
@@ -31,11 +33,18 @@ const manager = {
   },
 
 
-  getCurrScene () {
-    return this.currScene
+  initGame () {
+    this.currStage = this.stages.startScreen
   },
 
-  setupQuest () {},
+  getCurrScreen (isAdmin) {
+    let currScreen
+
+    if (isAdmin) { currScreen = this.currStage.admin }
+    else {currScreen = this.currStage.player}
+    return currScreen
+  },
+
   startGame () {},
 }
 

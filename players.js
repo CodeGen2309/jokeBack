@@ -1,28 +1,37 @@
 import fs from "fs"
 
+import colors from "./mocks/colors.js"
+import nicknames from "./mocks/nickNames.js"
+
 
 const playerList = {
   avatars   : [],
-  nicknames : null,
-  colors    : null,
+  nicknames : nicknames,
+  colors    : colors,
   players   : {},
+  ipaddress : null,
+  port: null,
 
 
-  initMocks (backAddress) {
-    let nickNamesPath, nickRes, avaFolder,
-    avaPath, symLink, avatars
+  setIP (ipaddress, port) {
+    this.ipaddress = ipaddress
+    this.port = port
+  },
 
-    nickNamesPath = './mocks/nickNames.json'
-    nickRes    = fs.readFileSync(nickNamesPath)
-    this.nicknames = JSON.parse(nickRes)
+  initAvatars () {
+    let avaFolder, avaPath, symLink,
+    backAddress
+
 
     symLink = 'icons/avatars'
     avaPath = `./public/${symLink}/`
     avaFolder = fs.readdirSync(avaPath)
+    backAddress = `http://${this.ipaddress}:${this.port}`
 
     for (let img of avaFolder) {
       this.avatars.push(`${backAddress}/${symLink}/${img}`)
     }
+
 
     this.shuffleArray(this.avatars)
     this.shuffleArray(this.nicknames)
@@ -34,15 +43,19 @@ const playerList = {
   },
 
 
-  getRandInt (length) {
-    return Math.floor(Math.random() * (length - 1))
+  getRandomElem (arr) {
+    let random = Math.floor(Math.random() * (arr.length - 1))
+    return arr[random]
   },
 
 
   createPlayer (ipaddress, nickname) {
-    let isAdmin = ipaddress == "::1"
+    let isAdmin = ipaddress == "::1"   || ipaddress.includes(this.ipaddress)
     let avatar  = this.avatars.pop()
-    let player = {avatar, nickname, ipaddress, isAdmin}
+    let background = this.getRandomElem(this.colors)
+
+    
+    let player = {avatar, nickname, background, ipaddress, isAdmin}
     return player
   },
 
@@ -67,6 +80,7 @@ const playerList = {
   getFreeNickName () {
     return this.nicknames.shift()
   },
+  
 
   changePlayer (ipaddr) {},
 
@@ -74,6 +88,12 @@ const playerList = {
   checkPlayer  (ipaddress) {
     return this.players.hasOwnProperty(ipaddress)
   },
+
+
+  getPlayer (ip) {
+    return this.players[ip]
+  },
+
 
   getPlayersTable () {
     return this.players
