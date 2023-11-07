@@ -16,6 +16,24 @@ function checkAdmin (serverIP, userIP) {
   return isAdmin
 }
 
+function getRandomInt (min = 0, max = 100) {
+  return Math.floor(Math.random() * (max - min) + min)
+}
 
 
-export default {createQr, checkAdmin}
+function getRandomElem (arr) {
+  let random = Math.floor(Math.random() * (arr.length - 1))
+  return arr[random]
+}
+
+
+function shuffleArray (arr) {
+  arr.sort(() => Math.random() - 0.5);
+}
+
+
+
+export default {
+  createQr, checkAdmin, getRandomInt,
+  getRandomElem, shuffleArray
+}

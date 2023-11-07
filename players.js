@@ -43,9 +43,24 @@ const playerList = {
   },
 
 
+  getRandomInt (min = 0, max = 100) {
+    return Math.floor(Math.random() * (max - min) + min)
+  },
+
+
   getRandomElem (arr) {
     let random = Math.floor(Math.random() * (arr.length - 1))
     return arr[random]
+  },
+
+
+  createRandomIP () {
+    let one   = this.getRandomInt(10, 999)
+    let two   = this.getRandomInt(10, 999)
+    let three = this.getRandomInt(10, 999)
+    let four  = this.getRandomInt(10, 999)
+
+    return `${one}.${two}.${three}.${four}`
   },
 
 
@@ -55,7 +70,12 @@ const playerList = {
     let background = this.getRandomElem(this.colors)
 
     
-    let player = {avatar, nickname, background, ipaddress, isAdmin}
+    let player = {
+      avatar, nickname, background, ipaddress,
+      firstQst: null, secondQst: null,
+      firstAns: null, secondAns: null
+    }
+
     return player
   },
 
@@ -96,6 +116,19 @@ const playerList = {
 
 
   getPlayersTable () {
+    return this.players
+  },
+
+  addBots (count) {
+    let tmPlayer, tmIP, nickname
+
+    for (let i = 0; i < count; i++) {
+      tmIP = this.createRandomIP()
+      nickname = this.getFreeNickName()
+      tmPlayer = this.createPlayer(tmIP, nickname)
+      this.players[tmIP] = tmPlayer
+    }
+
     return this.players
   },
 }

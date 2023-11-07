@@ -7,6 +7,7 @@ import ip from "ip"
 import utils from "./utils.js"
 import plList from "./players.js"
 import manager from "./manager.js"
+import riddler from "./riddler.js"
 
 
 // Create App ------------
@@ -23,7 +24,7 @@ app.use(express.static(publicFolder))
 
 
 // setUp mocks ---------
-utils.createQr(`./public/img/qr.jpg`, 'http://172.16.10.32:8080')
+utils.createQr(`./public/img/qr.jpg`, `http://${ipaddress}:8080/`)
 plList.setIP(ipaddress, PORT)
 plList.initAvatars()
 // setUp mocks ---------
@@ -41,7 +42,6 @@ app.get('/api/add-player', (req, res) => {
   let nickname = req.query.nickname
   let player = plList.addPlayer(ip, nickname)
 
-  console.log(player);
   res.json(player)
 })
 
@@ -62,18 +62,38 @@ app.get('/api/check-player', (req, res) => {
 app.get('/api/get-curr-screen', (req, res) => {
   let isAdmin = utils.checkAdmin(ipaddress, req.ip)
 
-
-  let screen = manager.getCurrScreen(isAdmin)
+  let player = plList.getPlayer(req.ip)
+  let screen = manager.getCurrScreen(player, isAdmin)
   res.json(screen)
 })
 
 
 app.get('/api/start-game', (req, res) => {
-  let ip = req.ip
-  let isAdmin = ip == "::1" || ip.includes(ipaddress)
-
+  plList.addBots(5)
+  riddler.setupQuestions(plList.players)
   manager.startGame()
+
+  console.log(plList.players);
+
   res.json(true)
+})
+
+
+
+app.get('/api/get-curr-quest', (req, res) => {
+  let player, currQuest
+
+  player = plList.getPlayer(req.ip)
+  if (!player) { currQuest = false }
+  else { currQuest = riddler.getCurrQuestion(player) }
+  res.json(currQuest)
+})
+
+
+app.get('/api/add-bots', (req, res) => {
+  let count = req.query.count || 5
+  let players = plList.addBots(count)
+  res.json(players)
 })
 
 

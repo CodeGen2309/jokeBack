@@ -1,52 +1,78 @@
-const manager = {
-  currStage: {
-    admin: 'lobby',
-    player: 'auth'
-  },
+class manager {
+  constructor () {
+    this.currStage = null
 
-  stages: {
-    'startScreen': {
-      admin: 'lobby',
-      player: 'auth'
-    },
 
-    'AskQuestions': {
-      isLastQuestion: false,
-      admin: 'waitScreen',
-      player: 'mgetanswer'
-    },
+    this.stages = {
+      'lobby': {
+        handler: this.lobbyStage,
+      },
 
-    'voting': {
-      admin: '',
-      player: '',
-    },
 
-    'waitPlayers': {
-      admin: '',
-      player: '',
-    },
+      'AskQuestions': {
+        handler: this.askQuestHandler
+      },
 
-    'endGame': {
-      admin: '',
-      player: '',
-    },
-  },
 
+      'voting': {
+        admin: '',
+        player: '',
+      },
+
+
+      'endGame': {
+        admin: '',
+        player: '',
+      },
+    }
+
+
+    this.initGame()
+  }
 
   initGame () {
+    this.currStage = this.stages.lobby
+  }
+
+
+// handlers ===============
+
+  initLobby () {
     this.currStage = this.stages.startScreen
-  },
+  }
 
-  getCurrScreen (isAdmin) {
-    let currScreen
+  getCurrScreen (player, isAdmin) {
+    return this.currStage.handler(player, isAdmin)
+  }
 
-    if (isAdmin) { currScreen = this.currStage.admin }
-    else {currScreen = this.currStage.player}
-    return currScreen
-  },
+  lobbyStage (player, isAdmin) {
+    if (isAdmin) { return 'lobby' }
 
-  startGame () {},
+    if (!player) { return 'auth' }
+    else { return 'lobbymobile' }
+  }
+
+
+  askQuestHandler (player, isAdmin) {
+    if (isAdmin) { return 'waitscreen' }
+
+    if (
+      player.firstAns == null || 
+      player.secondAns == null
+    ) { return 'mgetanswer' }
+
+    return 'waitmobile'
+  }
+
+// handlers ===============
+
+
+  startGame () {
+    this.currStage = this.stages.AskQuestions
+  }
+
+
 }
 
 
-export default manager
+export default new manager()
