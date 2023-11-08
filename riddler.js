@@ -4,7 +4,7 @@ import questions from './mocks/questions.js'
 const riddler = {
   players: [],
   questions: questions,
-  questTable: null,
+  questTable: [],
 
   shuffleArray (arr) {
     arr.sort(() => Math.random() - 0.5);
@@ -13,7 +13,7 @@ const riddler = {
 
   setupQuestions (plList) {
     let plKeys, currPlayer, nextKey,
-    nextPlayer
+    nextPlayer, tempQuest
 
     this.shuffleArray(this.questions)
     plKeys = Object.keys(plList)
@@ -23,6 +23,7 @@ const riddler = {
       currPlayer.firstQst = this.questions.pop()
     });
 
+    
     plKeys.forEach((key, index, arr) => {
       currPlayer = plList[key]
       nextKey = arr[index + 1]
@@ -41,13 +42,36 @@ const riddler = {
 
 
   getCurrQuestion (player) {
-    let currQuest
+    if ( !player ) { return false }
 
-    if (!playerIP) { return false }
+    if ( player.firstAns == null )  { return player.firstQst }
+    if ( player.secondAns == null ) { return player.secondQst }
+    return false
+  },
 
-    if ( player.firstAns == null ) { currQuest = player.firstQst }
-    else { currQuest = player.secondQst }
-    return currQuest
+
+
+
+  setAnswer (player, answer) {
+    if (!player) { return false }
+
+    if (player.firstAns == null) { player.firstAns = answer }
+    else { player.secondAns = answer }
+    return true
+  },
+
+
+  checkAllAnswers (players) {
+    let tempPlayer, checker
+
+    checker = true
+    for (let pl in players) {
+      tempPlayer = players[pl]
+      if (tempPlayer.firstAns == null) {checker = false}
+      if (tempPlayer.secondAns == null) {checker = false}
+    }
+
+    return checker
   },
 }
 

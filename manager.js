@@ -8,15 +8,14 @@ class manager {
         handler: this.lobbyStage,
       },
 
-
       'AskQuestions': {
         handler: this.askQuestHandler
       },
 
 
-      'voting': {
-        admin: '',
-        player: '',
+      'voteStage': {
+        voteQuest: null,
+        handler: this.voteHandler
       },
 
 
@@ -64,12 +63,29 @@ class manager {
     return 'waitmobile'
   }
 
+
+  voteHandler (player, isAdmin) {
+    if (isAdmin) { return 'voting' }
+    
+    
+  }
+
 // handlers ===============
 
+
+
+// controllers ===============
 
   startGame () {
     this.currStage = this.stages.AskQuestions
   }
+
+
+  startVoting () {
+    this.currStage = this.stages.voteStage
+  }
+
+// controllers ===============
 
 
 }

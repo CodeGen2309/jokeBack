@@ -69,24 +69,30 @@ app.get('/api/get-curr-screen', (req, res) => {
 
 
 app.get('/api/start-game', (req, res) => {
-  plList.addBots(5)
   riddler.setupQuestions(plList.players)
   manager.startGame()
-
-  console.log(plList.players);
-
   res.json(true)
 })
-
 
 
 app.get('/api/get-curr-quest', (req, res) => {
   let player, currQuest
 
   player = plList.getPlayer(req.ip)
-  if (!player) { currQuest = false }
-  else { currQuest = riddler.getCurrQuestion(player) }
+  currQuest = riddler.getCurrQuestion(player)
+  console.log(currQuest);
   res.json(currQuest)
+})
+
+
+app.get('/api/set-answer', (req, res) => {
+  let answer = req.query.answer
+  let player = plList.getPlayer(req.ip)
+  let result = riddler.setAnswer(player, answer)
+  let isAll  = riddler.checkAllAnswers(plList.players)
+
+  console.log(isAll);
+  res.json(result)
 })
 
 

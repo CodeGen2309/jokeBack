@@ -65,18 +65,15 @@ const playerList = {
 
 
   createPlayer (ipaddress, nickname) {
-    let isAdmin = ipaddress == "::1"   || ipaddress.includes(this.ipaddress)
     let avatar  = this.avatars.pop()
     let background = this.getRandomElem(this.colors)
 
-    
-    let player = {
+    return {
       avatar, nickname, background, ipaddress,
       firstQst: null, secondQst: null,
-      firstAns: null, secondAns: null
+      firstAns: null, secondAns: null, 
+      points: 0
     }
-
-    return player
   },
 
 
