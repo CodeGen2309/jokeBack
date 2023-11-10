@@ -1,6 +1,7 @@
 class manager {
   constructor () {
     this.currStage = null
+    this.currRoun = 1
 
 
     this.stages = {
@@ -66,9 +67,10 @@ class manager {
 
   voteHandler (player, isAdmin) {
     if (isAdmin) { return 'voting' }
-    
-    
+    if (player.alreadyVoted) { return 'waitmobile' }
+    return 'mvoteanswer'    
   }
+
 
 // handlers ===============
 
@@ -84,6 +86,17 @@ class manager {
   startVoting () {
     this.currStage = this.stages.voteStage
   }
+
+
+  startQest () {
+    this.currStage = this.stages.AskQuestions
+  }
+
+  showRoundPoints () {
+    return true
+  }
+
+  showLeaderBoard () {}
 
 // controllers ===============
 

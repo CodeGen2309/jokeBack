@@ -69,8 +69,10 @@ app.get('/api/get-curr-screen', (req, res) => {
 
 
 app.get('/api/start-game', (req, res) => {
+  plList.addBots(5)
   riddler.setupQuestions(plList.players)
   manager.startGame()
+
   res.json(true)
 })
 
@@ -91,6 +93,11 @@ app.get('/api/set-answer', (req, res) => {
   let result = riddler.setAnswer(player, answer)
   let isAll  = riddler.checkAllAnswers(plList.players)
 
+  if (isAll) { 
+    riddler.setupVotedAnswers(plList.players)
+    manager.startVoting()
+  }
+
   console.log(isAll);
   res.json(result)
 })
@@ -103,9 +110,55 @@ app.get('/api/add-bots', (req, res) => {
 })
 
 
-
 app.get('/api/get-qrcode', (req, res) => { 
   res.json(`${fullAddress}/img/qr.jpg`)
+})
+
+
+app.get('/api/add-point', (req, res) => { 
+  let playerID = req.query.playerid
+
+  console.log({playerID});
+
+  let result = plList.addPoint(playerID)
+  let players = plList.players
+
+  console.log({result});
+
+  res.json(players)
+})
+
+
+
+app.get('/api/set-voted', (req, res) => { 
+  let player, checkVotes, nextScreen
+
+  player = plList.getPlayer(req.ip)
+  console.log(player);
+
+  // player.alreadyVoted = true
+  // checkVotes = plList.checkAllVoted()
+
+  // if (checkVotes) { 
+  //   riddler.setupVotedAnswers(plList.players)
+  //   manager.showRoundPoints()
+  // }
+
+  // nextScreen = manager.getCurrScreen(player)
+  // res.json(nextScreen)
+})
+
+
+app.get('/api/get-voted-quest', (req, res) => {
+  let playerID, newQuest, setVoter
+
+  playerID = req,ip
+  setVoter = riddler.setVoter(playerID)
+  newQuest = riddler.sendNewQuest(playerID)
+
+  console.log({playerID, newQuest});
+
+  res.json(newQuest)
 })
 
 // setup Routes ------------------

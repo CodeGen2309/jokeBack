@@ -2,12 +2,15 @@ import fs from "fs"
 
 import colors from "./mocks/colors.js"
 import nicknames from "./mocks/nickNames.js"
+import answers from "./mocks/answers.js"
 
 
 const playerList = {
   avatars   : [],
   nicknames : nicknames,
   colors    : colors,
+  answers   : answers,
+
   players   : {},
   ipaddress : null,
   port: null,
@@ -35,6 +38,7 @@ const playerList = {
 
     this.shuffleArray(this.avatars)
     this.shuffleArray(this.nicknames)
+    this.shuffleArray(this.answers)
   },
 
 
@@ -72,7 +76,7 @@ const playerList = {
       avatar, nickname, background, ipaddress,
       firstQst: null, secondQst: null,
       firstAns: null, secondAns: null, 
-      points: 0
+      points: 0, alreadyVoted: false,
     }
   },
 
@@ -122,11 +126,32 @@ const playerList = {
     for (let i = 0; i < count; i++) {
       tmIP = this.createRandomIP()
       nickname = this.getFreeNickName()
+
       tmPlayer = this.createPlayer(tmIP, nickname)
+      tmPlayer.firstAns = this.answers.pop()
+      tmPlayer.secondAns = this.answers.pop()
+
       this.players[tmIP] = tmPlayer
     }
 
     return this.players
+  },
+
+  addPoint (playerID) {
+    let player = this.players[playerID]
+    if (!player) {return false}
+    player.points++
+    return true
+  },
+
+
+  checkAllVoted () {
+    for (let pl of this.players) {
+      console.log(pl);
+      if (!pl.alreadyVoted) { return false }
+    }
+
+    return true
   },
 }
 
