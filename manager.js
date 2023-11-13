@@ -88,8 +88,12 @@ class manager {
   }
 
 
-  startQest () {
+  startQuest () {
     this.currStage = this.stages.AskQuestions
+  }
+
+  setNewVoteQst (qst) {
+    this.voteStage.voteQuest = qst
   }
 
   showRoundPoints () {

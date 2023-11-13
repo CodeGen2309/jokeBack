@@ -30,11 +30,12 @@ const riddler = {
     let firstPlayer = plList[key]
     let nextKey = arr[index + 1] || arr[0]
     let secondPlayer = plList[nextKey]
+
     let quest = {
-      firstPlayer: key, secondPlayer: nextKey,
-      firstAns: null, secondAns: null,
-      voters: [],
-      text: this.questions.pop()
+      text: this.questions.pop(),
+      firstAnswer:  { player: key, text: '', voters: [] },
+      secondAnswer: { player: nextKey, text: '', voters: [] },
+      isAnswered: false,
     }
 
     firstPlayer.firstQst = quest.text
@@ -55,7 +56,7 @@ const riddler = {
       console.log(secondPlayer);
 
       qst.firstAns = firstPlayer.firstAns
-      qst.secondAns = firstPlayer.secondAns
+      qst.secondAns = secondPlayer.secondAns
     }
 
     return this.questTable
@@ -63,8 +64,7 @@ const riddler = {
 
 
   getCurrQuestion (player) {
-    if ( !player ) { return false }
-
+    if ( !player )                  { return false }
     if ( player.firstAns == null )  { return player.firstQst }
     if ( player.secondAns == null ) { return player.secondQst }
     return false
@@ -73,25 +73,35 @@ const riddler = {
 
   setAnswer (player, answer) {
     if (!player) { return false }
-
     if (player.firstAns == null) { player.firstAns = answer }
     else { player.secondAns = answer }
-    return true
+
+    this.checkIsPlayerAnswered(player)
+    return player
+  },
+
+
+  checkIsPlayerAnswered (player) {
+    let firstAnswer, secondAnswer
+
+    if ( player.firstAns != null )     { firstAnswer = true }
+    if ( player.secondAns != null )    { secondAnswer = true }
+    if ( firstAnswer && secondAnswer ) { player.alreadyVoted = true }
+
+    return player
   },
 
 
   checkAllAnswers (players) {
-    let tempPlayer, checker
-
-    checker = true
+    let checker = true
     for (let pl in players) {
-      tempPlayer = players[pl]
-      if (tempPlayer.firstAns == null) {checker = false}
-      if (tempPlayer.secondAns == null) {checker = false}
+      if (players[pl]['firstAns']  == null) {checker = false}
+      if (players[pl]['secondAns'] == null) {checker = false}
     }
 
     return checker
   },
+
 
   sendNewQuest (playerID) {
     for (let qst of his.questTable) {
@@ -104,6 +114,7 @@ const riddler = {
     return false
   },
 
+  
   setVoter (playerID, questionText) {
     for (let qst of his.questTable) {
       if (qst.text == questionText) { 

@@ -141,7 +141,7 @@ const playerList = {
     let player = this.players[playerID]
     if (!player) {return false}
     player.points++
-    return true
+    return player
   },
 
 
