@@ -2,7 +2,6 @@ import questions from './mocks/questions.js'
 
 
 const riddler = {
-  players: [],
   questions: questions,
   questTable: [],
 
@@ -12,21 +11,21 @@ const riddler = {
 
 
   setupQuestions (plList) {
-    let plKeys, tempQuest
+    let plKeys, tempQuest, qstIndex,
+    tmPlayer
 
     plKeys = Object.keys(plList)
     this.shuffleArray(this.questions)
 
     plKeys.forEach((key, index, arr) => {
-      tempQuest = this.setQuest(key, index, arr, plList)
-      this.questTable.push(tempQuest)
+      tempQuest = this.createQuest(key, index, arr, plList)
     })
 
     return this.questTable
   },
 
 
-  setQuest (key, index, arr, plList) {
+  createQuest (key, index, arr, plList) {
     let firstPlayer = plList[key]
     let nextKey = arr[index + 1] || arr[0]
     let secondPlayer = plList[nextKey]
@@ -35,13 +34,16 @@ const riddler = {
       text: this.questions.pop(),
       firstAnswer:  { player: key, text: '', voters: [] },
       secondAnswer: { player: nextKey, text: '', voters: [] },
-      isAnswered: false,
+      isAnswered: false, isVoted: false
     }
 
-    firstPlayer.firstQst = quest.text
-    secondPlayer.secondQst   = quest.text
+    let questIndex = this.questTable.push(quest) - 1
+
+    firstPlayer.firstQuest = questIndex
+    secondPlayer.secondQuest = questIndex
     return quest
   },
+
 
 
   setupVotedAnswers (players) {
@@ -50,10 +52,6 @@ const riddler = {
     for (let qst of this.questTable) {
       firstPlayer = players[qst.firstPlayer]
       secondPlayer = players[qst.secondPlayer]
-
-      console.log(qst);
-      console.log(firstPlayer);
-      console.log(secondPlayer);
 
       qst.firstAns = firstPlayer.firstAns
       qst.secondAns = secondPlayer.secondAns
@@ -64,64 +62,74 @@ const riddler = {
 
 
   getCurrQuestion (player) {
-    if ( !player )                  { return false }
-    if ( player.firstAns == null )  { return player.firstQst }
-    if ( player.secondAns == null ) { return player.secondQst }
+    let qTable = this.questTable
+    let firstID = player.firstQuest
+    let secondID = player.secondQuest
+
+    if (player.firstAnswer == null)  { return qTable[firstID] }
+    if (player.secondAnswer == null) { return qTable[secondID] }
+
+    if (
+      player.firstAns != null && 
+      player.secondAns != null
+    )  
+    { player.alreadyVoted = true }
+
     return false
   },
 
 
-  setAnswer (player, answer) {
-    if (!player) { return false }
-    if (player.firstAns == null) { player.firstAns = answer }
-    else { player.secondAns = answer }
+  getQuestionByID (questID) {
+    return  this.questTable[questID]
+  },
 
-    this.checkIsPlayerAnswered(player)
-    return player
+  getQuestForVote () {
+    this.questTable.forEach( (item, index) => {
+      if (!item.isVoted) { return index }
+    })
+
+    return false
   },
 
 
-  checkIsPlayerAnswered (player) {
-    let firstAnswer, secondAnswer
+  setAnswer (playerID, player, answer) {
+    let questID, question, firstAns, secondAns
 
-    if ( player.firstAns != null )     { firstAnswer = true }
-    if ( player.secondAns != null )    { secondAnswer = true }
-    if ( firstAnswer && secondAnswer ) { player.alreadyVoted = true }
+    if (player.firstAnswer == null) {
+      questID = player.firstQuest
+      player.firstAnswer = answer
+    }
 
-    return player
+    else if (player.secondAnswer == null) {
+      questID = player.secondQuest
+      player.secondAnswer = answer
+    }
+
+    question = this.questTable[questID]
+
+    firstAns = question.firstAnswer
+    secondAns = question.secondAnswer
+    
+    if( firstAns.player == playerID ) { firstAns.text = answer }
+    if( secondAns.player == playerID ) { secondAns.text = answer }
+
+    
+    if ( firstAns.text != '' &&  secondAns.text != '' ) {
+      question.isAnswered = true
+    }
+
+    return {player, question}
   },
 
-
-  checkAllAnswers (players) {
+  checkAllAnswers () {
     let checker = true
-    for (let pl in players) {
-      if (players[pl]['firstAns']  == null) {checker = false}
-      if (players[pl]['secondAns'] == null) {checker = false}
+
+    for (let qst of this.questTable) {
+      if (!qst.isAnswered) { checker = false }
     }
 
     return checker
-  },
-
-
-  sendNewQuest (playerID) {
-    for (let qst of his.questTable) {
-      if ( qst.voters.includes(playerID) ) { continue }
-      if ( qst.firstPlayer == playerID )   { continue }
-      if ( qst.secondPlayer == playerID )  { continue }
-      return qst
-    }
-
-    return false
-  },
-
-  
-  setVoter (playerID, questionText) {
-    for (let qst of his.questTable) {
-      if (qst.text == questionText) { 
-        qst.voters.push(playerID)
-      }
-    }
-  }
+  },  
 }
 
 

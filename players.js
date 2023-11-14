@@ -74,9 +74,10 @@ const playerList = {
 
     return {
       avatar, nickname, background, ipaddress,
-      firstQst: null, secondQst: null,
-      firstAns: null, secondAns: null, 
+      firstQuest: null, secondQuest: null,
+      firstAnswer: null, secondAnswer: null, 
       points: 0, alreadyVoted: false,
+      roundPoints: 0,
     }
   },
 
@@ -128,8 +129,8 @@ const playerList = {
       nickname = this.getFreeNickName()
 
       tmPlayer = this.createPlayer(tmIP, nickname)
-      tmPlayer.firstAns = this.answers.pop()
-      tmPlayer.secondAns = this.answers.pop()
+      tmPlayer.firstAnswer = this.answers.pop()
+      tmPlayer.secondAnswer = this.answers.pop()
 
       this.players[tmIP] = tmPlayer
     }

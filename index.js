@@ -61,7 +61,6 @@ app.get('/api/check-player', (req, res) => {
 
 app.get('/api/get-curr-screen', (req, res) => {
   let isAdmin = utils.checkAdmin(ipaddress, req.ip)
-
   let player = plList.getPlayer(req.ip)
   let screen = manager.getCurrScreen(player, isAdmin)
   res.json(screen)
@@ -82,21 +81,21 @@ app.get('/api/get-curr-quest', (req, res) => {
 
   player = plList.getPlayer(req.ip)
   currQuest = riddler.getCurrQuestion(player)
-
-  console.log('GET CURRRRRENT QUEEEST');
-  console.log({player});
   res.json(currQuest)
 })
 
 
 app.get('/api/set-answer', (req, res) => {
-  let answer = req.query.answer
-  let player = plList.getPlayer(req.ip)
-  let result = riddler.setAnswer(player, answer)
-  let isAll  = riddler.checkAllAnswers()
+  let playerID, player, answer, result, isAll
 
-  console.log('SET NEW ANSWER!!!!');
-  console.log({player, isAll});
+  playerID = req.ip
+  player = plList.getPlayer(playerID)
+  answer = req.query.answer
+  result = riddler.setAnswer(playerID, player, answer)
+  isAll  = riddler.checkAllAnswers()
+
+  if (isAll) { manager.startVoting() }
+  
   res.json(result)
 })
 
@@ -123,15 +122,36 @@ app.get('/api/add-point', (req, res) => {
 })
 
 
-app.get('/api/get-voted-quest', (req, res) => {
-  let playerID, newQuest, setVoter
+app.get('/api/get-quest-for-vote', (req, res) => {
+  let questID = manager.getCurrQuest()
+  let quest = riddler.getQuestionByID(questID)
+  res.json(quest)
+})
 
-  playerID = req,ip
-  setVoter = riddler.setVoter(playerID)
-  newQuest = riddler.sendNewQuest(playerID)
 
-  console.log({playerID, newQuest});
-  res.json(newQuest)
+app.get('/api/set-quest-for-vote', (req, res) => {})
+app.get('/api/set-vote', (req, res) => {})
+
+
+
+app.get('/api/auto-answer', (req, res) => {
+  let players, tmPlayer, fQuest, sQuest
+
+  players = plList.players
+
+  for (let pl in players) {
+    if ( pl.includes('ffff')) { continue }
+
+    tmPlayer = players[pl]
+    tmPlayer.firstAnswer = null
+    tmPlayer.secondAnswer = null
+
+    riddler.setAnswer(pl, tmPlayer, 'Пиздани')
+    riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
+  }
+
+  console.log(riddler.questTable);
+  res.json(players)
 })
 
 // setup Routes ------------------

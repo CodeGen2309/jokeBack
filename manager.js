@@ -15,7 +15,8 @@ class manager {
 
 
       'voteStage': {
-        voteQuest: null,
+        currentQuest: null,
+        roundPoints: {},
         handler: this.voteHandler
       },
 
@@ -56,10 +57,8 @@ class manager {
   askQuestHandler (player, isAdmin) {
     if (isAdmin) { return 'waitscreen' }
 
-    if (
-      player.firstAns == null || 
-      player.secondAns == null
-    ) { return 'mgetanswer' }
+    if ( player.firstAnswer == null || player.secondAnswer == null ) 
+    { return 'mgetanswer' }
 
     return 'waitmobile'
   }
@@ -68,6 +67,7 @@ class manager {
   voteHandler (player, isAdmin) {
     if (isAdmin) { return 'voting' }
     if (player.alreadyVoted) { return 'waitmobile' }
+
     return 'mvoteanswer'    
   }
 
@@ -84,6 +84,7 @@ class manager {
 
 
   startVoting () {
+    this.stages.voteStage.currentQuest = 0
     this.currStage = this.stages.voteStage
   }
 
@@ -92,9 +93,21 @@ class manager {
     this.currStage = this.stages.AskQuestions
   }
 
-  setNewVoteQst (qst) {
+
+  getVotedQuest () {
+    return this.stages.voteStage.currentQuest
+  }
+
+
+  setVotedQuest (qst) {
     this.voteStage.voteQuest = qst
   }
+
+
+  addPoint (player) {
+    
+  }
+
 
   showRoundPoints () {
     return true
