@@ -11,8 +11,7 @@ const riddler = {
 
 
   setupQuestions (plList) {
-    let plKeys, tempQuest, qstIndex,
-    tmPlayer
+    let plKeys, tempQuest
 
     plKeys = Object.keys(plList)
     this.shuffleArray(this.questions)
@@ -42,22 +41,6 @@ const riddler = {
     firstPlayer.firstQuest = questIndex
     secondPlayer.secondQuest = questIndex
     return quest
-  },
-
-
-
-  setupVotedAnswers (players) {
-    let firstPlayer, secondPlayer
-
-    for (let qst of this.questTable) {
-      firstPlayer = players[qst.firstPlayer]
-      secondPlayer = players[qst.secondPlayer]
-
-      qst.firstAns = firstPlayer.firstAns
-      qst.secondAns = secondPlayer.secondAns
-    }
-
-    return this.questTable
   },
 
 
@@ -120,6 +103,15 @@ const riddler = {
 
     return {player, question}
   },
+
+
+  voteForAnswer (questID, answer, player) {
+    let quest = this.getQuestionByID(questID)
+    let voters = quest[answer]['voters']
+    voters.push(player)
+    return quest
+  },
+
 
   checkAllAnswers () {
     let checker = true

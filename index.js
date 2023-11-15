@@ -123,19 +123,42 @@ app.get('/api/add-point', (req, res) => {
 
 
 app.get('/api/get-quest-for-vote', (req, res) => {
-  let questID = manager.getCurrQuest()
-  let quest = riddler.getQuestionByID(questID)
+  let questID, quest
+
+  questID = manager.getVotedQuest()
+  quest = riddler.getQuestionByID(questID)
+
+  console.log('GET VOTED QUEST!!!!!');
+  console.log({quest});
+
   res.json(quest)
 })
 
 
-app.get('/api/set-quest-for-vote', (req, res) => {})
-app.get('/api/set-vote', (req, res) => {})
+app.get('/api/set-quest-for-vote', (req, res) => {
+
+})
+
+app.get('/api/set-vote', (req, res) => {
+  let voter, answer, questID, question,
+  voteRes
+
+  voter = plList.getPlayer(req.ip)
+  voter.alreadyVoted = true
+
+  answer = req.query.answer
+  questID = manager.getVotedQuest()
+  question = riddler.voteForAnswer(questID, answer, req.ip)
+
+  console.log(voter, question);
+
+  res.json(true)
+})
 
 
 
 app.get('/api/auto-answer', (req, res) => {
-  let players, tmPlayer, fQuest, sQuest
+  let players, tmPlayer, isAll
 
   players = plList.players
 
@@ -149,6 +172,14 @@ app.get('/api/auto-answer', (req, res) => {
     riddler.setAnswer(pl, tmPlayer, 'Пиздани')
     riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
   }
+
+  isAll = riddler.checkAllAnswers()
+  if (isAll) { 
+    console.log('STAAAART VOOOOTIN !!!!!!');
+    manager.startVoting() 
+  }
+
+
 
   console.log(riddler.questTable);
   res.json(players)

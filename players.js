@@ -141,8 +141,23 @@ const playerList = {
   addPoint (playerID) {
     let player = this.players[playerID]
     if (!player) {return false}
+
     player.points++
+    player.roundPoints++
+
     return player
+  },
+
+
+  resetRoundPoints () {
+    let plKeys, tmPlayer
+
+    plKeys = Object.keys(this.players)
+
+    for (let key in plKeys) {
+      tmPlayer = this.players[key]
+      tmPlayer.roundPoints = 0
+    }
   },
 
 

@@ -68,7 +68,7 @@ class manager {
     if (isAdmin) { return 'voting' }
     if (player.alreadyVoted) { return 'waitmobile' }
 
-    return 'mvoteanswer'    
+    return 'mvoteanswer'
   }
 
 
@@ -105,7 +105,6 @@ class manager {
 
 
   addPoint (player) {
-    
   }
 
 
