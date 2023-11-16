@@ -65,7 +65,7 @@ class manager {
 
 
   voteHandler (player, isAdmin) {
-    if (isAdmin) { return 'voting' }
+    if (isAdmin) { return 'votescreen' }
     if (player.alreadyVoted) { return 'waitmobile' }
 
     return 'mvoteanswer'

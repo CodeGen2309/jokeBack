@@ -117,6 +117,31 @@ const playerList = {
   },
 
 
+  getPlayerByID (playerID) {
+    return this.players[playerID]
+  },
+
+
+  setPlayerVoted (playerID) {
+    let player = this.players[playerID]
+    player.alreadyVoted = true
+  },
+
+
+  resetVotedPlayers () {
+    let tmPlayer, plKeys
+
+    plKeys = Object.keys(this.players)
+
+    for (let key in plKeys) {
+      tmPlayer = this.players[key]
+      tmPlayer.alreadyVoted = false
+    }
+
+    return true
+  },
+
+
   getPlayersTable () {
     return this.players
   },
@@ -158,6 +183,20 @@ const playerList = {
       tmPlayer = this.players[key]
       tmPlayer.roundPoints = 0
     }
+  },
+
+
+  getPlayersIcons (voters) {
+    let tmPlayer, icons, tmpIcon
+
+    icons = []
+    for (let vtr in voters) {
+      tmPlayer = this.players[vtr]
+      tmpIcon = tmPlayer.avatar
+      icons.push(tmpIcon)
+    }
+
+    return icons
   },
 
 

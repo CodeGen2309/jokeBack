@@ -129,32 +129,69 @@ app.get('/api/get-quest-for-vote', (req, res) => {
   quest = riddler.getQuestionByID(questID)
 
   console.log('GET VOTED QUEST!!!!!');
-  console.log({quest});
+  
+  
 
   res.json(quest)
 })
 
 
 app.get('/api/set-quest-for-vote', (req, res) => {
+  let newQuestID = riddler.getQuestForVote()
 
+  plList.resetVotedPlayers()
+  plList.resetRoundPoints()
+
+  res.json(newQuestID)
 })
+
 
 app.get('/api/set-vote', (req, res) => {
   let voter, answer, questID, question,
-  voteRes
-
-  voter = plList.getPlayer(req.ip)
-  voter.alreadyVoted = true
+  playerID, player
 
   answer = req.query.answer
   questID = manager.getVotedQuest()
   question = riddler.voteForAnswer(questID, answer, req.ip)
 
-  console.log(voter, question);
+  playerID = riddler.getPlayerID(questID, answer)
+  player = plList.getPlayerByID(playerID)
+  plList.addPoint(playerID)
+
+  voter = plList.getPlayer(req.ip)
+  plList.setPlayerVoted(req.ip)
+
+  console.log('NEW WOOOOOTE!!!!!');
+  console.log({voter, question, player});
 
   res.json(true)
 })
 
+
+app.get('/api/get-vote-result', (req, res) => {
+  let questID, quest, firstPlayer, secondPlayer,
+  firstVoters, secondVoters,
+  reslutEpt
+
+  questID = manager.getVotedQuest()
+  quest = riddler.getQuestionByID(questID)
+
+  firstPlayer = plList.getPlayerByID(quest.firstAnswer.player)
+  secondPlayer = plList.getPlayerByID(quest.secondAnswer.player)
+  firstVoters = plList.getPlayersIcons(quest.firstAnswer.voters)
+  secondVoters = plList.getPlayersIcons(quest.secondAnswer.voters)
+
+  quest.firstAnswer.player = firstPlayer
+  quest.firstAnswer.voters = firstVoters
+
+  quest.secondAnswer.player = secondPlayer
+  quest.secondAnswer.voters = secondVoters
+
+
+  console.log('GET VOOOOTE RESULT!!!!');
+  console.log({quest});
+  res.json(quest)
+})
 
 
 app.get('/api/auto-answer', (req, res) => {
@@ -178,8 +215,6 @@ app.get('/api/auto-answer', (req, res) => {
     console.log('STAAAART VOOOOTIN !!!!!!');
     manager.startVoting() 
   }
-
-
 
   console.log(riddler.questTable);
   res.json(players)

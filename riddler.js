@@ -113,6 +113,16 @@ const riddler = {
   },
 
 
+  getPlayerID (questID, answer) {
+    let quest, playerID
+    
+    quest = this.getQuestionByID(questID)
+    playerID = quest[answer]['player']
+
+    return playerID
+  },
+
+
   checkAllAnswers () {
     let checker = true
 
