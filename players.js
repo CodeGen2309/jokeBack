@@ -77,7 +77,7 @@ const playerList = {
       firstQuest: null, secondQuest: null,
       firstAnswer: null, secondAnswer: null, 
       points: 0, alreadyVoted: false,
-      roundPoints: 0,
+      roundPoints: 0, questPoints: 0,
     }
   },
 
@@ -133,7 +133,7 @@ const playerList = {
 
     plKeys = Object.keys(this.players)
 
-    for (let key in plKeys) {
+    for (let key of plKeys) {
       tmPlayer = this.players[key]
       tmPlayer.alreadyVoted = false
     }
@@ -167,8 +167,9 @@ const playerList = {
     let player = this.players[playerID]
     if (!player) {return false}
 
-    player.points++
-    player.roundPoints++
+    player.points = player.points + 1
+    player.roundPoints = player.roundPoints + 1
+    player.questPoints = player.questPoints + 1
 
     return player
   },
@@ -179,9 +180,34 @@ const playerList = {
 
     plKeys = Object.keys(this.players)
 
-    for (let key in plKeys) {
+    for (let key of plKeys) {
       tmPlayer = this.players[key]
       tmPlayer.roundPoints = 0
+    }
+  },
+
+
+  resetQuestPoints () {
+    let plKeys, tmPlayer
+
+    plKeys = Object.keys(this.players)
+
+    for (let key of plKeys) {
+      tmPlayer = this.players[key]
+      tmPlayer.questPoints = 0
+    }
+  },
+
+
+  resetPlayersAnswers () {
+    let plKeys, tmPlayer
+
+    plKeys = Object.keys(this.players)
+
+    for (let key of plKeys) {
+      tmPlayer = this.players[key]
+      tmPlayer.firstAnswer = null
+      tmPlayer.secondAnswer = null
     }
   },
 
@@ -190,23 +216,16 @@ const playerList = {
     let tmPlayer, icons, tmpIcon
 
     icons = []
-    for (let vtr in voters) {
+    for (let vtr of voters) {
+      console.log('CHECK VOTER!');
+      console.log(this.players[vtr]);
+
       tmPlayer = this.players[vtr]
       tmpIcon = tmPlayer.avatar
       icons.push(tmpIcon)
     }
 
     return icons
-  },
-
-
-  checkAllVoted () {
-    for (let pl of this.players) {
-      console.log(pl);
-      if (!pl.alreadyVoted) { return false }
-    }
-
-    return true
   },
 }
 

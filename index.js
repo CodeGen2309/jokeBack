@@ -62,15 +62,31 @@ app.get('/api/check-player', (req, res) => {
 app.get('/api/get-curr-screen', (req, res) => {
   let isAdmin = utils.checkAdmin(ipaddress, req.ip)
   let player = plList.getPlayer(req.ip)
+
   let screen = manager.getCurrScreen(player, isAdmin)
   res.json(screen)
 })
 
 
 app.get('/api/start-game', (req, res) => {
-  plList.addBots(5)
   riddler.setupQuestions(plList.players)
   manager.startGame()
+
+  res.json(true)
+})
+
+
+
+
+app.get('/api/start-new-round', (req, res) => {
+  plList.resetRoundPoints()
+
+  riddler.questTable = []
+  riddler.setupQuestions(plList.players)
+  plList.resetPlayersAnswers()
+  manager.startQuest()
+
+  console.log('NEW ROUND!!!');
 
   res.json(true)
 })
@@ -123,16 +139,37 @@ app.get('/api/add-point', (req, res) => {
 
 
 app.get('/api/get-quest-for-vote', (req, res) => {
-  let questID, quest
+  let questID, quest, 
+  fpID, spID,
+  firstPlayer, secondPlayer
 
   questID = manager.getVotedQuest()
+  console.log("QUEST ID!!!!");
+  console.log(questID);
+
+
+
+  if (questID == undefined) { 
+    manager.finishRound()
+
+    res.json({
+      quest: false, firstPlayer: false,
+      secondPlayer: false
+    })
+
+    return
+  }
+
+
   quest = riddler.getQuestionByID(questID)
 
-  console.log('GET VOTED QUEST!!!!!');
-  
-  
+  fpID = quest.firstAnswer.player
+  spID = quest.secondAnswer.player
 
-  res.json(quest)
+  firstPlayer = plList.getPlayerByID(fpID)
+  secondPlayer = plList.getPlayerByID(spID)
+
+  res.json({quest, firstPlayer, secondPlayer})
 })
 
 
@@ -140,9 +177,9 @@ app.get('/api/set-quest-for-vote', (req, res) => {
   let newQuestID = riddler.getQuestForVote()
 
   plList.resetVotedPlayers()
-  plList.resetRoundPoints()
+  plList.resetQuestPoints()
 
-  res.json(newQuestID)
+  res.json(true)
 })
 
 
@@ -170,11 +207,12 @@ app.get('/api/set-vote', (req, res) => {
 
 app.get('/api/get-vote-result', (req, res) => {
   let questID, quest, firstPlayer, secondPlayer,
-  firstVoters, secondVoters,
+  firstVoters, secondVoters, newQuestID,
   reslutEpt
 
   questID = manager.getVotedQuest()
   quest = riddler.getQuestionByID(questID)
+
 
   firstPlayer = plList.getPlayerByID(quest.firstAnswer.player)
   secondPlayer = plList.getPlayerByID(quest.secondAnswer.player)
@@ -187,9 +225,13 @@ app.get('/api/get-vote-result', (req, res) => {
   quest.secondAnswer.player = secondPlayer
   quest.secondAnswer.voters = secondVoters
 
+  riddler.setQuestVoted(questID)
+  newQuestID = riddler.getQuestForVote()
+  manager.setVotedQuest(newQuestID)
 
-  console.log('GET VOOOOTE RESULT!!!!');
-  console.log({quest});
+  plList.resetQuestPoints()
+  plList.resetVotedPlayers()
+
   res.json(quest)
 })
 

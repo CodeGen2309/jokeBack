@@ -66,12 +66,21 @@ const riddler = {
     return  this.questTable[questID]
   },
 
+  setQuestVoted (questID) {
+    this.questTable[questID]['isVoted'] = true
+    return this.questTable[questID]
+  },
+
   getQuestForVote () {
+    let newQuest = undefined
     this.questTable.forEach( (item, index) => {
-      if (!item.isVoted) { return index }
+      if (!item.isVoted) {
+        newQuest = index
+        return newQuest
+      }
     })
 
-    return false
+    return newQuest
   },
 
 

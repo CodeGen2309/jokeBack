@@ -6,7 +6,7 @@ class manager {
 
     this.stages = {
       'lobby': {
-        handler: this.lobbyStage,
+        handler: this.lobbyStage
       },
 
       'AskQuestions': {
@@ -17,7 +17,11 @@ class manager {
       'voteStage': {
         currentQuest: null,
         roundPoints: {},
-        handler: this.voteHandler
+        handler: this.voteHandler,
+      },
+
+      'endRound': {
+        handler: this.endRoundHandler
       },
 
 
@@ -53,11 +57,17 @@ class manager {
     else { return 'lobbymobile' }
   }
 
+  endRoundHandler (player, isAdmin) {
+    if (isAdmin) {return 'leaderboard'}
+    else { return 'mscreenfocus' }
+  }
 
   askQuestHandler (player, isAdmin) {
     if (isAdmin) { return 'waitscreen' }
 
-    if ( player.firstAnswer == null || player.secondAnswer == null ) 
+    if ( player.firstAnswer == null || 
+      player.secondAnswer == null
+    ) 
     { return 'mgetanswer' }
 
     return 'waitmobile'
@@ -100,13 +110,12 @@ class manager {
 
 
   setVotedQuest (qst) {
-    this.voteStage.voteQuest = qst
+    this.stages.voteStage.currentQuest = qst
   }
 
-
-  addPoint (player) {
+  finishRound () {
+    this.currStage = this.stages.endRound
   }
-
 
   showRoundPoints () {
     return true
