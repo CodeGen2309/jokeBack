@@ -1,7 +1,6 @@
 class manager {
   constructor () {
     this.currStage = null
-    this.currRoun = 1
 
 
     this.stages = {
@@ -16,6 +15,7 @@ class manager {
 
       'voteStage': {
         currentQuest: null,
+        currRound: 1,
         roundPoints: {},
         handler: this.voteHandler,
       },
@@ -76,7 +76,13 @@ class manager {
 
   voteHandler (player, isAdmin) {
     if (isAdmin) { return 'votescreen' }
-    if (player.alreadyVoted) { return 'waitmobile' }
+
+    console.log('STAGE!!!!!');
+    let currQuest = this.currentQuest
+
+    if (player.alreadyVoted)              { return 'waitmobile' }
+    if (player.firstQuest == currQuest )  { return 'waitmobile' }
+    if (player.secondQuest == currQuest ) { return 'waitmobile' }
 
     return 'mvoteanswer'
   }
@@ -115,13 +121,27 @@ class manager {
 
   finishRound () {
     this.currStage = this.stages.endRound
+    return true
   }
 
   showRoundPoints () {
     return true
   }
 
+
   showLeaderBoard () {}
+
+
+  startSecondRound () {
+    this.stages.voteStage.currRound = 2
+    return true
+  }
+
+
+  startThirdRound () {
+    this.stages.voteStage.currRound = 3
+    return true
+  }
 
 // controllers ===============
 

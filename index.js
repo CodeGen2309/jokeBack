@@ -80,14 +80,20 @@ app.get('/api/start-game', (req, res) => {
 
 
 app.get('/api/start-new-round', (req, res) => {
+  let currRound = manager.stages.voteStage.currRound
+
   plList.resetRoundPoints()
+  plList.resetPlayersAnswers()
+
+  if (currRound == 1) {manager.startSecondRound()}
+  if (currRound == 2) {manager.startThirdRound()}
+
 
   riddler.questTable = []
   riddler.setupQuestions(plList.players)
-  plList.resetPlayersAnswers()
-  manager.startQuest()
-
+  
   console.log('NEW ROUND!!!');
+  manager.startQuest()
 
   res.json(true)
 })
@@ -140,25 +146,34 @@ app.get('/api/add-point', (req, res) => {
 
 
 app.get('/api/get-quest-for-vote', (req, res) => {
-  let questID, quest, 
-  fpID, spID,
-  firstPlayer, secondPlayer
+  let questID, quest, playerID,
+  fpID, spID, endOfRound, isPlayerAnswered,
+  firstPlayer, secondPlayer, falseQuest
 
+
+  falseQuest = {
+    quest: false, firstPlayer: false, secondPlayer: false,
+  }
+
+  playerID = req.ip
   questID = manager.getVotedQuest()
+  endOfRound = questID == undefined
 
-  if (questID == undefined) { 
-    return res.json({
-      quest: false, firstPlayer: false,
-      secondPlayer: false
-    })
+
+  if (questID == undefined) {
+    return res.json(falseQuest)
   }
 
   quest = riddler.getQuestionByID(questID)
   fpID = quest.firstAnswer.player
   spID = quest.secondAnswer.player
 
+  isPlayerAnswered = fpID == playerID || spID == playerID
+  if (isPlayerAnswered) { return res.json(falseQuest) }
+
   firstPlayer = plList.getPlayerByID(fpID)
   secondPlayer = plList.getPlayerByID(spID)
+
   res.json({quest, firstPlayer, secondPlayer})
 })
 
@@ -167,6 +182,7 @@ app.get('/api/finish-round', (req, res) => {
   manager.finishRound()
   res.json(true)
 })
+
 
 
 app.get('/api/set-vote', (req, res) => {
@@ -251,12 +267,7 @@ app.get('/api/auto-answer', (req, res) => {
   }
 
   isAll = riddler.checkAllAnswers()
-  if (isAll) { 
-    console.log('STAAAART VOOOOTIN !!!!!!');
-    manager.startVoting() 
-  }
-
-  console.log(riddler.questTable);
+  if (isAll) {  manager.startVoting() }
   res.json(players)
 })
 

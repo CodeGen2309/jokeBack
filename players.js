@@ -167,9 +167,9 @@ const playerList = {
     let player = this.players[playerID]
     if (!player) {return false}
 
-    player.points = player.points + 1
-    player.roundPoints = player.roundPoints + 1
-    player.questPoints = player.questPoints + 1
+    this.players[playerID]['points'] += 1
+    this.players[playerID]['roundPoints'] += 1
+    this.players[playerID]['questPoints'] += 1
 
     return player
   },
