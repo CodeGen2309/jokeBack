@@ -110,6 +110,11 @@ class manager {
   }
 
 
+  stopVoting () {
+    this.stages.voteStage.currentQuest = undefined
+  }
+
+
   getVotedQuest () {
     return this.stages.voteStage.currentQuest
   }
@@ -119,12 +124,9 @@ class manager {
     this.stages.voteStage.currentQuest = qst
   }
 
+  
   finishRound () {
     this.currStage = this.stages.endRound
-    return true
-  }
-
-  showRoundPoints () {
     return true
   }
 

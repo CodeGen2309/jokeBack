@@ -31,9 +31,11 @@ function shuffleArray (arr) {
   arr.sort(() => Math.random() - 0.5);
 }
 
-
+async function sleep (sec) {
+  return new Promise(resolve => setTimeout(resolve, sec * 1000));
+}
 
 export default {
   createQr, checkAdmin, getRandomInt,
-  getRandomElem, shuffleArray
+  getRandomElem, shuffleArray, sleep
 }

@@ -160,7 +160,7 @@ app.get('/api/get-quest-for-vote', (req, res) => {
   endOfRound = questID == undefined
 
 
-  if (questID == undefined) {
+  if (endOfRound) {
     return res.json(falseQuest)
   }
 
@@ -174,7 +174,7 @@ app.get('/api/get-quest-for-vote', (req, res) => {
   firstPlayer = plList.getPlayerByID(fpID)
   secondPlayer = plList.getPlayerByID(spID)
 
-  res.json({quest, firstPlayer, secondPlayer})
+  return res.json({quest, firstPlayer, secondPlayer})
 })
 
 
@@ -207,7 +207,7 @@ app.get('/api/set-vote', (req, res) => {
 })
 
 
-app.get('/api/get-vote-result', (req, res) => {
+app.get('/api/get-vote-result', async (req, res) => {
   let questID, quest, firstPlayer, secondPlayer,
   firstVoters, secondVoters, newQuestID,
   reslutEpt
@@ -221,13 +221,15 @@ app.get('/api/get-vote-result', (req, res) => {
   firstVoters = plList.getPlayersIcons(quest.firstAnswer.voters)
   secondVoters = plList.getPlayersIcons(quest.secondAnswer.voters)
 
+
   quest.firstAnswer.player = firstPlayer
   quest.firstAnswer.voters = firstVoters
 
   quest.secondAnswer.player = secondPlayer
   quest.secondAnswer.voters = secondVoters
 
-  res.json(quest)
+  manager.setVotedQuest(questID)
+  return res.json(quest)
 })
 
 
