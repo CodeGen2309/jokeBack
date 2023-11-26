@@ -77,6 +77,12 @@ app.get('/api/start-game', (req, res) => {
 })
 
 
+app.get('/api/get-round-index', (req, res) => {
+  let round = manager.getRoundIndex()
+  console.log('ROUND INDEX!!!');
+  console.log({round});
+  return res.json(round)
+})
 
 
 app.get('/api/start-new-round', (req, res) => {

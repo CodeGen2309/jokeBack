@@ -124,6 +124,11 @@ class manager {
     this.stages.voteStage.currentQuest = qst
   }
 
+
+  getRoundIndex () {
+    return this.stages.voteStage.currRound
+  }
+
   
   finishRound () {
     this.currStage = this.stages.endRound
