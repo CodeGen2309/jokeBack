@@ -69,36 +69,35 @@ app.get('/api/get-curr-screen', (req, res) => {
 
 
 app.get('/api/start-game', (req, res) => {
+  let points, playersArr
+  
   plList.addBots(4)
   riddler.setupQuestions(plList.players)
-  manager.startGame()
+  playersArr = Object.keys(plList.players)
+  points = manager.calcPointsForVote(playersArr.length)
 
-  res.json(true)
+  manager.startGame()
+  res.json({points})
 })
 
 
-app.get('/api/get-round-index', (req, res) => {
-  let round = manager.getRoundIndex()
-  console.log('ROUND INDEX!!!');
-  console.log({round});
+app.get('/api/get-next-round-index', (req, res) => {
+  let round = manager.getNextRoundIndex()
   return res.json(round)
 })
 
 
 app.get('/api/start-new-round', (req, res) => {
-  let currRound = manager.stages.voteStage.currRound
-
   plList.resetRoundPoints()
   plList.resetPlayersAnswers()
-
-  if (currRound == 1) {manager.startSecondRound()}
-  if (currRound == 2) {manager.startThirdRound()}
-
-
+  
   riddler.questTable = []
   riddler.setupQuestions(plList.players)
-  
-  console.log('NEW ROUND!!!');
+
+  manager.startNextRound()
+
+  console.log('NEXT ROUND!');
+
   manager.startQuest()
 
   res.json(true)
@@ -138,16 +137,6 @@ app.get('/api/add-bots', (req, res) => {
 
 app.get('/api/get-qrcode', (req, res) => { 
   res.json(`${fullAddress}/img/qr.jpg`)
-})
-
-
-app.get('/api/add-point', (req, res) => { 
-  let playerID = req.query.playerid
-
-  let result = plList.addPoint(playerID)
-  let players = plList.players
-
-  res.json(players)
 })
 
 
@@ -193,21 +182,19 @@ app.get('/api/finish-round', (req, res) => {
 
 app.get('/api/set-vote', (req, res) => {
   let voter, answer, questID, question,
-  playerID, player
+  playerID, player, points
 
   answer = req.query.answer
   questID = manager.getVotedQuest()
   question = riddler.voteForAnswer(questID, answer, req.ip)
+  points = manager.currRound.pointsForVote
 
   playerID = riddler.getPlayerID(questID, answer)
   player = plList.getPlayerByID(playerID)
-  plList.addPoint(playerID)
+  plList.addPoints(playerID, points)
 
   voter = plList.getPlayer(req.ip)
   plList.setPlayerVoted(req.ip)
-
-  console.log('NEW WOOOOOTE!!!!!');
-  console.log({voter, question, player});
 
   res.json(true)
 })
@@ -215,8 +202,8 @@ app.get('/api/set-vote', (req, res) => {
 
 app.get('/api/get-vote-result', async (req, res) => {
   let questID, quest, firstPlayer, secondPlayer,
-  firstVoters, secondVoters, newQuestID,
-  reslutEpt
+  firstVoters, secondVoters, 
+  newQuestID
 
   questID = manager.getVotedQuest()
   quest = riddler.getQuestionByID(questID)
@@ -276,8 +263,10 @@ app.get('/api/auto-answer', (req, res) => {
 
   isAll = riddler.checkAllAnswers()
   if (isAll) {  manager.startVoting() }
-  res.json(players)
+  return res.json(players)
 })
+
+
 
 // setup Routes ------------------
 
@@ -289,5 +278,6 @@ app.get('/api/auto-answer', (req, res) => {
 // Run server!!!!---------------
 app.listen(PORT)
 // Run server!!!!---------------
+
 
 console.log(fullAddress);

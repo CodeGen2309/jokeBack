@@ -1,6 +1,7 @@
 class manager {
   constructor () {
     this.currStage = null
+    this.currRound = null
 
 
     this.stages = {
@@ -11,7 +12,6 @@ class manager {
       'AskQuestions': {
         handler: this.askQuestHandler
       },
-
 
       'voteStage': {
         currentQuest: null,
@@ -29,6 +29,23 @@ class manager {
         admin: '',
         player: '',
       },
+    }
+
+
+    this.rounds = {
+      'firstRound': {
+        'points': 1000,
+        'pointsForVote': 0,
+        'nextRound': 2,
+      },
+
+      'secondRound': {
+        'points': 2000,
+        'pointsForVote': 0,
+        'nextRound': 3,
+      },
+
+      'thirdRound': {},
     }
 
 
@@ -77,7 +94,6 @@ class manager {
   voteHandler (player, isAdmin) {
     if (isAdmin) { return 'votescreen' }
 
-    console.log('STAGE!!!!!');
     let currQuest = this.currentQuest
 
     if (player.alreadyVoted)              { return 'waitmobile' }
@@ -96,6 +112,7 @@ class manager {
 
   startGame () {
     this.currStage = this.stages.AskQuestions
+    this.currRound = this.rounds.firstRound
   }
 
 
@@ -125,8 +142,21 @@ class manager {
   }
 
 
-  getRoundIndex () {
-    return this.stages.voteStage.currRound
+  calcPointsForVote (playersCount) {
+    let firstPoints = this.rounds.firstRound.points
+    let secondPoints = this.rounds.secondRound.points
+    let firstCalc = Math.floor(firstPoints / playersCount)
+    let secondCalc = Math.floor(secondPoints / playersCount)
+
+    this.rounds.firstRound.pointsForVote = firstCalc
+    this.rounds.secondRound.pointsForVote = secondCalc
+
+    return {firstCalc, secondCalc}
+  }
+
+
+  getNextRoundIndex () {
+    return this.currRound.nextRound
   }
 
   
@@ -136,19 +166,24 @@ class manager {
   }
 
 
+  startNextRound () {
+    console.log(this.currRound);
+
+    if (this.currRound.nextRound == 2) { 
+      this.currRound = this.rounds.secondRound
+    }
+
+    if (this.currRound == 3) { 
+      this.currRound = this.rounds.thirdRound
+    }
+
+    console.log(this.currRound);
+    return true
+  }
+
+
   showLeaderBoard () {}
 
-
-  startSecondRound () {
-    this.stages.voteStage.currRound = 2
-    return true
-  }
-
-
-  startThirdRound () {
-    this.stages.voteStage.currRound = 3
-    return true
-  }
 
 // controllers ===============
 

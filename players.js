@@ -1,4 +1,4 @@
-import fs from "fs"
+import fs, { truncate } from "fs"
 
 import colors from "./mocks/colors.js"
 import nicknames from "./mocks/nickNames.js"
@@ -163,13 +163,14 @@ const playerList = {
     return this.players
   },
 
-  addPoint (playerID) {
+
+  addPoints (playerID, points = 1) {
     let player = this.players[playerID]
     if (!player) {return false}
 
-    this.players[playerID]['points'] += 1
-    this.players[playerID]['roundPoints'] += 1
-    this.players[playerID]['questPoints'] += 1
+    this.players[playerID]['points'] += points
+    this.players[playerID]['roundPoints'] += points
+    this.players[playerID]['questPoints'] += points    
 
     return player
   },
