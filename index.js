@@ -77,6 +77,11 @@ app.get('/api/start-game', (req, res) => {
   points = manager.calcPointsForVote(playersArr.length)
 
   manager.startGame()
+
+  // test
+  plList.checkComicsAnswers()
+  // test
+
   res.json({points})
 })
 
@@ -265,6 +270,32 @@ app.get('/api/auto-answer', (req, res) => {
   if (isAll) {  manager.startVoting() }
   return res.json(players)
 })
+
+app.get('/api/get-comics', (req, res) => {
+  let comics = riddler.getComics()
+  return res.json(comics)
+})
+
+
+app.get('/api/set-comics-answer', (req, res) => {
+  let playerID, player, answer, result, isAll
+
+  playerID = req.ip
+  answer = req.query.answer
+  result = riddler.setAnswer(playerID, answer)
+  isAll  = riddler.checkComicsAnswers()
+
+  if (isAll) { manager.startComicsVoting() }
+  
+  res.json(result)
+})
+
+
+app.get('/api/start-comics-vote', (req, res) => {})
+
+
+
+app.get('/api/template', (req, res) => {})
 
 
 

@@ -1,9 +1,12 @@
+import fs from 'fs'
 import questions from './mocks/questions.js'
 
 
 const riddler = {
   questions: questions,
   questTable: [],
+  comicsQuest: null,
+  comicsAnswers: [],
 
   shuffleArray (arr) {
     arr.sort(() => Math.random() - 0.5);
@@ -20,7 +23,29 @@ const riddler = {
       tempQuest = this.createQuest(key, index, arr, plList)
     })
 
+    this.setupComics()
     return this.questTable
+  },
+
+
+  setupComics () {
+    let comicsFolder, comicsLinks
+
+    comicsLinks = []
+    comicsFolder = fs.readdirSync('./public/img/comicRound/')
+
+    for (let cms of comicsFolder) {
+      comicsLinks.push(`/img/comicRound/${cms}`)
+    }
+    
+    this.shuffleArray(comicsLinks)
+    this.comicsQuest = comicsLinks.pop()
+    return comicsLinks
+  },
+
+
+  getComics () {
+    return this.comicsQuest
   },
 
 
@@ -140,7 +165,7 @@ const riddler = {
     }
 
     return checker
-  },  
+  },   
 }
 
 

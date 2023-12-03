@@ -1,3 +1,5 @@
+import fs from "fs"
+
 class manager {
   constructor () {
     this.currStage = null
@@ -9,9 +11,11 @@ class manager {
         handler: this.lobbyStage
       },
 
+
       'AskQuestions': {
         handler: this.askQuestHandler
       },
+
 
       'voteStage': {
         currentQuest: null,
@@ -20,8 +24,26 @@ class manager {
         handler: this.voteHandler,
       },
 
+
       'endRound': {
         handler: this.endRoundHandler
+      },
+
+
+      'comicsQuest': {
+        currComics: '',
+        questText: '',
+        handler: this.comicsQuestHandler,
+      },
+
+
+      'comicsVote': {
+        handler: this.comicsVoteHandler,
+      },
+
+
+      'comicsResults': {
+        handler: this.comicsResultsHandler,
       },
 
 
@@ -80,12 +102,16 @@ class manager {
   }
 
   askQuestHandler (player, isAdmin) {
+    let fAnsNull, sAnsNull
+
     if (isAdmin) { return 'waitscreen' }
 
-    if ( player.firstAnswer == null || 
-      player.secondAnswer == null
-    ) 
-    { return 'mgetanswer' }
+    fAnsNull = player.firstAnswer == null
+    sAnsNull = player.secondAnswer == null
+
+    if ( fAnsNull || sAnsNull) {
+      return 'mgetanswer' 
+    }
 
     return 'waitmobile'
   }
@@ -102,6 +128,13 @@ class manager {
 
     return 'mvoteanswer'
   }
+
+
+  comicsQuestHandler (player, isAdmin) {
+  }
+
+  comicsVoteHandler (player, isAdmin) {}
+  comicsResultsHandler (player, isAdmin) {}
 
 
 // handlers ===============
@@ -175,6 +208,7 @@ class manager {
 
     if (this.currRound == 3) { 
       this.currRound = this.rounds.thirdRound
+      this.currStage = this.stages.comicsQuest
     }
 
     console.log(this.currRound);

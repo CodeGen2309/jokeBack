@@ -1,4 +1,4 @@
-import fs, { truncate } from "fs"
+import fs from "fs"
 
 import colors from "./mocks/colors.js"
 import nicknames from "./mocks/nickNames.js"
@@ -78,6 +78,7 @@ const playerList = {
       firstAnswer: null, secondAnswer: null, 
       points: 0, alreadyVoted: false,
       roundPoints: 0, questPoints: 0,
+      comicsAnswer: null,
     }
   },
 
@@ -154,8 +155,7 @@ const playerList = {
       nickname = this.getFreeNickName()
 
       tmPlayer = this.createPlayer(tmIP, nickname)
-      tmPlayer.firstAnswer = this.answers.pop()
-      tmPlayer.secondAnswer = this.answers.pop()
+      tmPlayer.comicsAnswer = this.answers.pop()
 
       this.players[tmIP] = tmPlayer
     }
@@ -228,6 +228,23 @@ const playerList = {
 
     return icons
   },
+
+
+  checkComicsAnswers () {
+    let checker, tmPlayer
+
+
+    checker = true
+    for (let index in this.players) {
+      tmPlayer = this.players[index]
+      
+      if (tmPlayer.comicsAnswer == null) {
+        checker = false
+      }
+    }
+
+    return checker
+  }
 }
 
 
