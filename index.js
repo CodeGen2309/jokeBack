@@ -275,16 +275,16 @@ app.get('/api/get-comics', (req, res) => {
 
 
 app.get('/api/set-comics-answer', (req, res) => {
-  let playerID, player, answer, result, isAll
+  let playerID, answer, result, isAll
 
   playerID = req.ip
   answer = req.query.answer
-  result = riddler.setAnswer(playerID, answer)
-  isAll  = riddler.checkComicsAnswers()
+  riddler.setComicsAnswer(playerID, answer)
 
+  isAll  = riddler.checkComicsAnswers()
   if (isAll) { manager.startComicsVoting() }
   
-  res.json(result)
+  return res.json(true)
 })
 
 
@@ -297,8 +297,25 @@ app.get('/api/get-comics-answers', (req, res) => {
   return res.json(answers)
 })
 
+app.get('/api/vote-comics-answer', (req, res) => {
+  let tmPlayer, answerID, voter
+
+  answerID = req.query.answer
+  tmPlayer = plList.getPlayerByID(req.ip)
+  voter = {nickname: tmPlayer.nickname, avatar: tmPlayer.avatar}
+  answer = riddler.voteForComicsAnswer(answerID, voter)
+  return res.json(true)
+})
+
+
+
 app.get('/api/start-comics-vote', (req, res) => {})
 
+
+app.get('/api/get-vote-results', (req, res) => {
+  let answers
+
+})
 
 
 app.get('/api/template', (req, res) => {})
@@ -314,9 +331,7 @@ app.get('/api/template', (req, res) => {})
 
 // Run server!!!!---------------
 app.listen(PORT)
-
 plList.addBots(20)
-let tmp = riddler.getComicsAnswers(plList.players)
 // Run server!!!!---------------
 
 

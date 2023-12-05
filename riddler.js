@@ -139,6 +139,17 @@ const riddler = {
   },
 
 
+  setComicsAnswer (playerID, answer) {
+    this.comicsAnswers.push({playerID, answer, voters:[]})
+  },
+
+
+  voteForComicsAnswer (answerID, voter) {
+    let currQuest = this.comicsAnswers[answerID]
+    currQuest.voters.push(voter)
+  },
+
+
   voteForAnswer (questID, answer, player) {
     let quest = this.getQuestionByID(questID)
     let voters = quest[answer]['voters']

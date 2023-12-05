@@ -233,7 +233,6 @@ const playerList = {
   checkComicsAnswers () {
     let checker, tmPlayer
 
-
     checker = true
     for (let index in this.players) {
       tmPlayer = this.players[index]

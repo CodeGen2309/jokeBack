@@ -131,6 +131,9 @@ class manager {
 
 
   comicsQuestHandler (player, isAdmin) {
+    if (isAdmin) { return 'comicsquest' }
+    if (player.comicsAnswer != null) { return 'waitmobile' } 
+    return 'mcomicsamswer'
   }
 
   comicsVoteHandler (player, isAdmin) {}
