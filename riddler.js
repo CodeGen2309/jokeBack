@@ -44,7 +44,7 @@ const riddler = {
   },
 
 
-  getComics () {
+  getComicsQuest () {
     return this.comicsQuest
   },
 
@@ -165,7 +165,26 @@ const riddler = {
     }
 
     return checker
-  },   
+  },
+
+
+  getComicsAnswers (players) {
+    let answers, nickname, playerID, player,
+    avatar, comicsAnswer
+
+    answers = []
+    for (let pl in players) {
+      playerID          = pl
+      player            = players[pl]
+      avatar            = player.avatar
+      nickname          = player.nickname
+      comicsAnswer      = player.comicsAnswer
+
+      answers.push({playerID, avatar, nickname, comicsAnswer})
+    }
+
+    return answers
+  },
 }
 
 

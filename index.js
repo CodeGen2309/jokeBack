@@ -78,9 +78,6 @@ app.get('/api/start-game', (req, res) => {
 
   manager.startGame()
 
-  // test
-  plList.checkComicsAnswers()
-  // test
 
   res.json({points})
 })
@@ -272,7 +269,7 @@ app.get('/api/auto-answer', (req, res) => {
 })
 
 app.get('/api/get-comics', (req, res) => {
-  let comics = riddler.getComics()
+  let comics = riddler.getComicsQuest()
   return res.json(comics)
 })
 
@@ -291,6 +288,15 @@ app.get('/api/set-comics-answer', (req, res) => {
 })
 
 
+app.get('/api/get-comics-answers', (req, res) => {
+  let players, answers
+
+  players = plList.players
+  answers = riddler.getComicsAnswers(players)
+
+  return res.json(answers)
+})
+
 app.get('/api/start-comics-vote', (req, res) => {})
 
 
@@ -308,6 +314,9 @@ app.get('/api/template', (req, res) => {})
 
 // Run server!!!!---------------
 app.listen(PORT)
+
+plList.addBots(20)
+let tmp = riddler.getComicsAnswers(plList.players)
 // Run server!!!!---------------
 
 
