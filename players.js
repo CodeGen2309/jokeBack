@@ -21,6 +21,7 @@ const playerList = {
     this.port = port
   },
 
+
   initAvatars () {
     let avaFolder, avaPath, symLink,
     backAddress
@@ -104,9 +105,6 @@ const playerList = {
     return this.nicknames.shift()
   },
   
-
-  changePlayer (ipaddr) {},
-
 
   checkPlayer  (ipaddress) {
     return this.players.hasOwnProperty(ipaddress)

@@ -203,18 +203,19 @@ class manager {
 
 
   startNextRound () {
-    console.log(this.currRound);
-
     if (this.currRound.nextRound == 2) { 
       this.currRound = this.rounds.secondRound
+      this.startQuest()
     }
 
-    if (this.currRound == 3) { 
+    else if (this.currRound.nextRound == 3) { 
       this.currRound = this.rounds.thirdRound
       this.currStage = this.stages.comicsQuest
+      console.log('ROUND 3!!!');
     }
-
+    
     console.log(this.currRound);
+    console.log(this.currStage);
     return true
   }
 

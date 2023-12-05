@@ -97,11 +97,6 @@ app.get('/api/start-new-round', (req, res) => {
   riddler.setupQuestions(plList.players)
 
   manager.startNextRound()
-
-  console.log('NEXT ROUND!');
-
-  manager.startQuest()
-
   res.json(true)
 })
 
@@ -261,6 +256,7 @@ app.get('/api/auto-answer', (req, res) => {
 
     riddler.setAnswer(pl, tmPlayer, 'Пиздани')
     riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
+    riddler.setComicsAnswer(pl, tmPlayer.comicsAnswer)
   }
 
   isAll = riddler.checkAllAnswers()
@@ -313,8 +309,6 @@ app.get('/api/start-comics-vote', (req, res) => {})
 
 
 app.get('/api/get-vote-results', (req, res) => {
-  let answers
-
 })
 
 
@@ -331,7 +325,7 @@ app.get('/api/template', (req, res) => {})
 
 // Run server!!!!---------------
 app.listen(PORT)
-plList.addBots(20)
+// plList.addBots(20)
 // Run server!!!!---------------
 
 

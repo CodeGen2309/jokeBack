@@ -179,22 +179,8 @@ const riddler = {
   },
 
 
-  getComicsAnswers (players) {
-    let answers, nickname, playerID, player,
-    avatar, comicsAnswer
-
-    answers = []
-    for (let pl in players) {
-      playerID          = pl
-      player            = players[pl]
-      avatar            = player.avatar
-      nickname          = player.nickname
-      comicsAnswer      = player.comicsAnswer
-
-      answers.push({playerID, avatar, nickname, comicsAnswer})
-    }
-
-    return answers
+  getComicsAnswers () {
+    return this.comicsAnswers
   },
 }
 
