@@ -216,9 +216,6 @@ const playerList = {
 
     icons = []
     for (let vtr of voters) {
-      console.log('CHECK VOTER!');
-      console.log(this.players[vtr]);
-
       tmPlayer = this.players[vtr]
       tmpIcon = tmPlayer.avatar
       icons.push(tmpIcon)
@@ -236,6 +233,22 @@ const playerList = {
       tmPlayer = this.players[index]
       
       if (tmPlayer.comicsAnswer == null) {
+        checker = false
+      }
+    }
+
+    return checker
+  },
+
+
+  checkVotedPlayers () {
+    let checker, tmPlayer
+
+    checker = true
+    for (let index in this.players) {
+      tmPlayer = this.players[index]
+      
+      if (!tmPlayer.alreadyVoted) {
         checker = false
       }
     }

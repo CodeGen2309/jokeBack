@@ -92,6 +92,7 @@ app.get('/api/get-next-round-index', (req, res) => {
 app.get('/api/start-new-round', (req, res) => {
   plList.resetRoundPoints()
   plList.resetPlayersAnswers()
+  plList.resetVotedPlayers()
   
   riddler.questTable = []
   riddler.setupQuestions(plList.players)
@@ -256,7 +257,10 @@ app.get('/api/auto-answer', (req, res) => {
 
     riddler.setAnswer(pl, tmPlayer, 'Пиздани')
     riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
-    riddler.setComicsAnswer(pl, tmPlayer.comicsAnswer)
+
+    riddler.setComicsAnswer(
+      pl, tmPlayer.avatar, tmPlayer.nickname, tmPlayer.comicsAnswer
+    )
   }
 
   isAll = riddler.checkAllAnswers()
@@ -271,14 +275,22 @@ app.get('/api/get-comics', (req, res) => {
 
 
 app.get('/api/set-comics-answer', (req, res) => {
-  let playerID, answer, result, isAll
+  let player, answer, isAll, nickname,
+  avatar
 
-  playerID = req.ip
+  player = plList.getPlayer(req.ip)
+  nickname = player.nickname
+  avatar = player.avatar
   answer = req.query.answer
-  riddler.setComicsAnswer(playerID, answer)
+  player.comicsAnswer = answer
 
-  isAll  = riddler.checkComicsAnswers()
-  if (isAll) { manager.startComicsVoting() }
+  riddler.setComicsAnswer(req.ip, avatar, nickname, answer)
+  isAll  = plList.checkComicsAnswers()
+
+  if (isAll) {
+    console.log('COMICS ANSWERS ALL!!!!!');
+    manager.startComicsVoting()
+  }
   
   return res.json(true)
 })
@@ -294,12 +306,18 @@ app.get('/api/get-comics-answers', (req, res) => {
 })
 
 app.get('/api/vote-comics-answer', (req, res) => {
-  let tmPlayer, answerID, voter
+  let tmPlayer, answerID, voter, answer,
+  isAll
 
-  answerID = req.query.answer
   tmPlayer = plList.getPlayerByID(req.ip)
+  tmPlayer.alreadyVoted = true
   voter = {nickname: tmPlayer.nickname, avatar: tmPlayer.avatar}
+
+  answerID = req.query.answerID
   answer = riddler.voteForComicsAnswer(answerID, voter)
+
+  isAll = plList.checkVotedPlayers()
+
   return res.json(true)
 })
 
@@ -308,7 +326,9 @@ app.get('/api/vote-comics-answer', (req, res) => {
 app.get('/api/start-comics-vote', (req, res) => {})
 
 
-app.get('/api/get-vote-results', (req, res) => {
+app.get('/api/get-comics-vote-results', (req, res) => {
+  let answers = riddler.getComicsAnswers()
+  res.json(answers)
 })
 
 

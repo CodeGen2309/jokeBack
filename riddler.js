@@ -139,14 +139,21 @@ const riddler = {
   },
 
 
-  setComicsAnswer (playerID, answer) {
-    this.comicsAnswers.push({playerID, answer, voters:[]})
+  setComicsAnswer (playerID, avatar, nikckname, text) {
+    this.comicsAnswers.push({
+      playerID, avatar, nikckname, text, voters:[]
+    })
   },
 
 
   voteForComicsAnswer (answerID, voter) {
-    let currQuest = this.comicsAnswers[answerID]
-    currQuest.voters.push(voter)
+    let currAnswer = this.comicsAnswers[answerID]
+
+    console.log('CURRENT ANSWER!!');
+    console.log(this.comicsAnswers);
+    console.log(answerID);
+
+    // currAnswer.voters.push(voter)
   },
 
 

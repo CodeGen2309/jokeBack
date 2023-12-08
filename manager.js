@@ -132,11 +132,18 @@ class manager {
 
   comicsQuestHandler (player, isAdmin) {
     if (isAdmin) { return 'comicsquest' }
-    if (player.comicsAnswer != null) { return 'waitmobile' } 
+    if (player.comicsAnswer != null) { return 'waitmobile' }
     return 'mcomicsamswer'
   }
 
-  comicsVoteHandler (player, isAdmin) {}
+
+  comicsVoteHandler (player, isAdmin) {
+    if (isAdmin) { return 'comicsvote' }
+    if (player.alreadyVoted) { return 'waitmobile' }
+    return 'mcomicsvote'
+  }
+
+
   comicsResultsHandler (player, isAdmin) {}
 
 
@@ -155,6 +162,11 @@ class manager {
   startVoting () {
     this.stages.voteStage.currentQuest = 0
     this.currStage = this.stages.voteStage
+  }
+
+
+  startComicsVoting () {
+    this.currStage = this.stages.comicsVote
   }
 
 
@@ -214,8 +226,6 @@ class manager {
       console.log('ROUND 3!!!');
     }
     
-    console.log(this.currRound);
-    console.log(this.currStage);
     return true
   }
 
