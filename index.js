@@ -264,7 +264,7 @@ app.get('/api/auto-answer', (req, res) => {
   }
 
   isAll = riddler.checkAllAnswers()
-  if (isAll) {  manager.startVoting() }
+  if (isAll) { manager.startVoting() }
   return res.json(players)
 })
 
@@ -337,9 +337,6 @@ app.get('/api/template', (req, res) => {})
 
 
 // setup Routes ------------------
-
-
-
 
 
 

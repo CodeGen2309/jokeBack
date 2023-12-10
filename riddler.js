@@ -141,7 +141,8 @@ const riddler = {
 
   setComicsAnswer (playerID, avatar, nikckname, text) {
     this.comicsAnswers.push({
-      playerID, avatar, nikckname, text, voters:[]
+      playerID, avatar, nikckname, text, voters:[],
+      poinst: 0
     })
   },
 
@@ -153,7 +154,7 @@ const riddler = {
     console.log(this.comicsAnswers);
     console.log(answerID);
 
-    // currAnswer.voters.push(voter)
+    currAnswer.voters.push(voter)
   },
 
 
@@ -189,6 +190,16 @@ const riddler = {
   getComicsAnswers () {
     return this.comicsAnswers
   },
+
+
+  calculateComicsVotes () {
+    let currAns, tempVote, voters
+
+    voters = []
+    for (let id in this.comicsAnswers) {
+      console.log(id);
+    }
+  }
 }
 
 
