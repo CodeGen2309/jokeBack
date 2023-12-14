@@ -158,11 +158,34 @@ const riddler = {
   },
 
 
-  voteForAnswer (questID, answer, player) {
+  voteForAnswer (questID, answer, playerID) {
     let quest = this.getQuestionByID(questID)
     let voters = quest[answer]['voters']
-    voters.push(player)
+    voters.push(playerID)
     return quest
+  },
+
+
+  calcVoteResult (questID, roundPoints) {
+    let quest, fPoints, sPoints,
+    fVoters, sVoters, votersCount, ptsPerVote
+
+    quest = this.questTable[questID]
+
+    fVoters = quest.firstAnswer.voters.length
+    sVoters = quest.secondAnswer.voters.length
+    votersCount = fVoters + sVoters
+    ptsPerVote = 0
+
+    if (votersCount > 0) {
+      ptsPerVote = roundPoints / votersCount
+    }
+    
+
+    fPoints = ptsPerVote * fVoters
+    sPoints = ptsPerVote * sVoters
+
+    return { ptsPerVote, fPoints, sPoints }
   },
 
 

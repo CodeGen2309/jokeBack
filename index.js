@@ -179,45 +179,48 @@ app.get('/api/finish-round', (req, res) => {
 
 
 app.get('/api/set-vote', (req, res) => {
-  let voter, answer, questID, question,
-  playerID, player, points
+  let answer, questID, playerID,
+  points
 
   answer = req.query.answer
   questID = manager.getVotedQuest()
-  question = riddler.voteForAnswer(questID, answer, req.ip)
   points = manager.currRound.pointsForVote
 
   playerID = riddler.getPlayerID(questID, answer)
-  player = plList.getPlayerByID(playerID)
-  plList.addPoints(playerID, points)
-
-  voter = plList.getPlayer(req.ip)
   plList.setPlayerVoted(req.ip)
+  riddler.voteForAnswer(questID, answer, req.ip)
 
   res.json(true)
 })
 
 
 app.get('/api/get-vote-result', async (req, res) => {
-  let questID, quest, firstPlayer, secondPlayer,
-  firstVoters, secondVoters, 
-  newQuestID
+  let questID, quest, fPlayerID, sPlayerID,
+  firstPlayer, secondPlayer,
+  firstVoters, secondVoters, roundPoints,
+  voteRes
 
   questID = manager.getVotedQuest()
+  roundPoints = manager.currRound.points
   quest = riddler.getQuestionByID(questID)
 
+  fPlayerID = quest.firstAnswer.player
+  sPlayerID = quest.secondAnswer.player
 
-  firstPlayer = plList.getPlayerByID(quest.firstAnswer.player)
-  secondPlayer = plList.getPlayerByID(quest.secondAnswer.player)
+  firstPlayer = plList.getPlayerByID(fPlayerID)
+  secondPlayer = plList.getPlayerByID(sPlayerID)
   firstVoters = plList.getPlayersIcons(quest.firstAnswer.voters)
   secondVoters = plList.getPlayersIcons(quest.secondAnswer.voters)
-
 
   quest.firstAnswer.player = firstPlayer
   quest.firstAnswer.voters = firstVoters
 
   quest.secondAnswer.player = secondPlayer
   quest.secondAnswer.voters = secondVoters
+
+  voteRes = riddler.calcVoteResult(questID, roundPoints)
+  plList.addPoints(fPlayerID, voteRes.fPoints)
+  plList.addPoints(sPlayerID, voteRes.sPoints)
 
   manager.setVotedQuest(questID)
   return res.json(quest)
