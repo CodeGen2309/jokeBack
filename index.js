@@ -254,6 +254,7 @@ app.get('/api/auto-answer', (req, res) => {
   for (let pl in players) {
     if ( pl.includes('ffff')) { continue }
 
+    
     tmPlayer = players[pl]
     tmPlayer.firstAnswer = null
     tmPlayer.secondAnswer = null
@@ -308,6 +309,7 @@ app.get('/api/get-comics-answers', (req, res) => {
   return res.json(answers)
 })
 
+
 app.get('/api/vote-comics-answer', (req, res) => {
   let tmPlayer, answerID, voter, answer,
   isAll
@@ -342,11 +344,44 @@ app.get('/api/template', (req, res) => {})
 // setup Routes ------------------
 
 
+let test = () => {
+  let players, tmPlayer, isAll
+
+  players = plList.players
+
+  for (let pl in players) {
+    if ( pl.includes('ffff')) { continue }
+
+    
+    tmPlayer = players[pl]
+    tmPlayer.firstAnswer = null
+    tmPlayer.secondAnswer = null
+
+    riddler.setAnswer(pl, tmPlayer, 'Пиздани')
+    riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
+
+    riddler.setComicsAnswer(
+      pl, tmPlayer.avatar, tmPlayer.nickname, tmPlayer.comicsAnswer
+    )
+  }
+
+  // isAll = riddler.checkAllAnswers()
+  // if (isAll) { manager.startVoting() }
+}
+
+
 
 // Run server!!!!---------------
 app.listen(PORT)
-// plList.addBots(20)
+plList.addBots(15)
+riddler.setupQuestions(plList.players)
+
+test()
+
+
+riddler.calculateComicsVotes()
+console.log(riddler.getComicsAnswers());
 // Run server!!!!---------------
 
 
-console.log(fullAddress);
+// console.log(fullAddress);

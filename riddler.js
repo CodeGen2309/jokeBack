@@ -1,5 +1,6 @@
 import fs from 'fs'
 import questions from './mocks/questions.js'
+import utils from './utils.js';
 
 
 const riddler = {
@@ -91,10 +92,12 @@ const riddler = {
     return  this.questTable[questID]
   },
 
+
   setQuestVoted (questID) {
     this.questTable[questID]['isVoted'] = true
     return this.questTable[questID]
   },
+
 
   getQuestForVote () {
     let newQuest = undefined
@@ -216,12 +219,29 @@ const riddler = {
 
 
   calculateComicsVotes () {
-    let currAns, tempVote, voters
+    let currAns, tempVote, voters,
+    votersCount
 
-    voters = []
-    for (let id in this.comicsAnswers) {
-      console.log(id);
+    // random voterCount
+    for (let ans in this.comicsAnswers) {
+      currAns = this.comicsAnswers[ans]
+      currAns.voteCount = utils.getRandomInt(1, 20)
     }
+
+    // sorting answers 
+    this.comicsAnswers.sort((a, b) => {
+      return a.voteCount > b.voteCount ? -1 : 1
+    })
+
+    this.comicsAnswers[0]['points'] = 2500
+    this.comicsAnswers[1]['points'] = 2000
+    this.comicsAnswers[2]['points'] = 1500
+    this.comicsAnswers[3]['points'] = 500
+    this.comicsAnswers[4]['points'] = 500
+    this.comicsAnswers[5]['points'] = 500
+    this.comicsAnswers[6]['points'] = 500
+    this.comicsAnswers[7]['points'] = 500
+    this.comicsAnswers[8]['points'] = 500
   }
 }
 
