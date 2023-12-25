@@ -1,4 +1,4 @@
-import express from "express"
+import express, { json } from "express"
 import path from "path"
 import cors from "cors"
 import ip from "ip"
@@ -332,8 +332,8 @@ app.get('/api/start-comics-vote', (req, res) => {})
 
 
 app.get('/api/get-comics-vote-results', (req, res) => {
-  let answers = riddler.getComicsAnswers()
-  res.json(answers)
+  let result = riddler.calcVoteResult()
+  return res.json(result)
 })
 
 
@@ -394,14 +394,14 @@ let setupBotVoters = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-plList.addBots(15)
-riddler.setupQuestions(plList.players)
+// plList.addBots(15)
+// riddler.setupQuestions(plList.players)
 
-devInitGame()
-setupBotVoters()
-riddler.calculateComicsVotes()
+// devInitGame()
+// setupBotVoters()
+// riddler.calculateComicsVotes()
 
 
 // Log dev data
-// console.log(fullAddress);
-console.log(riddler.comicsAnswers);
+console.log(fullAddress);
+// console.log(riddler.comicsAnswers);

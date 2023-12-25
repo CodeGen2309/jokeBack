@@ -235,6 +235,8 @@ const riddler = {
     for (let index in cPoints) {
       this.comicsAnswers[index]['points'] = cPoints[index]
     }
+
+    return this.comicsAnswers
   }
 }
 
