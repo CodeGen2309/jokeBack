@@ -1,6 +1,9 @@
 import qr from 'qrcode'
 import fs from  "fs"
 
+import nickNames from './mocks/nickNames.js'
+
+
 async function createQr (path, data) {
   if (fs.existsSync(path)) {
     fs.unlinkSync(path)
@@ -26,10 +29,10 @@ function getRandomElem (arr) {
   return arr[random]
 }
 
-
 function shuffleArray (arr) {
   arr.sort(() => Math.random() - 0.5);
 }
+
 
 async function sleep (sec) {
   return new Promise(resolve => setTimeout(resolve, sec * 1000));
@@ -37,5 +40,5 @@ async function sleep (sec) {
 
 export default {
   createQr, checkAdmin, getRandomInt,
-  getRandomElem, shuffleArray, sleep
+  getRandomElem, shuffleArray, sleep,
 }

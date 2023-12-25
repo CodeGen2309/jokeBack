@@ -3,6 +3,7 @@ import fs from "fs"
 import colors from "./mocks/colors.js"
 import nicknames from "./mocks/nickNames.js"
 import answers from "./mocks/answers.js"
+import utils from "./utils.js"
 
 
 const playerList = {
@@ -70,7 +71,7 @@ const playerList = {
 
 
   createPlayer (ipaddress, nickname) {
-    let avatar  = this.avatars.pop()
+    let avatar  = utils.getRandomElem(this.avatars)
     let background = this.getRandomElem(this.colors)
 
     return {
@@ -81,6 +82,15 @@ const playerList = {
       roundPoints: 0, questPoints: 0,
       comicsAnswer: null,
     }
+  },
+
+
+  createRandomVoter () {
+    let nickname, avatar
+
+    avatar = utils.getRandomElem(this.avatars)
+    nickname = utils.getRandomElem(this.nicknames)
+    return {avatar, nickname}
   },
 
 

@@ -1,6 +1,10 @@
 import fs from 'fs'
 import questions from './mocks/questions.js'
+import cPoints from './mocks/comicsPoints.js'
 import utils from './utils.js';
+
+// Потом можно будет удалить
+import nickNames from './mocks/nickNames.js';
 
 
 const riddler = {
@@ -145,17 +149,13 @@ const riddler = {
   setComicsAnswer (playerID, avatar, nikckname, text) {
     this.comicsAnswers.push({
       playerID, avatar, nikckname, text, voters:[],
-      poinst: 0
+      points: 0
     })
   },
 
 
   voteForComicsAnswer (answerID, voter) {
     let currAnswer = this.comicsAnswers[answerID]
-
-    console.log('CURRENT ANSWER!!');
-    console.log(this.comicsAnswers);
-    console.log(answerID);
 
     currAnswer.voters.push(voter)
   },
@@ -191,7 +191,6 @@ const riddler = {
     return { ptsPerVote, fPoints, sPoints }
   },
 
-
   getPlayerID (questID, answer) {
     let quest, playerID
     
@@ -222,10 +221,10 @@ const riddler = {
     let currAns, tempVote, voters,
     votersCount
 
-    // random voterCount
+    // calc votersCount
     for (let ans in this.comicsAnswers) {
       currAns = this.comicsAnswers[ans]
-      currAns.voteCount = utils.getRandomInt(1, 20)
+      currAns.voteCount = currAns.voters.length
     }
 
     // sorting answers 
@@ -233,15 +232,9 @@ const riddler = {
       return a.voteCount > b.voteCount ? -1 : 1
     })
 
-    this.comicsAnswers[0]['points'] = 2500
-    this.comicsAnswers[1]['points'] = 2000
-    this.comicsAnswers[2]['points'] = 1500
-    this.comicsAnswers[3]['points'] = 500
-    this.comicsAnswers[4]['points'] = 500
-    this.comicsAnswers[5]['points'] = 500
-    this.comicsAnswers[6]['points'] = 500
-    this.comicsAnswers[7]['points'] = 500
-    this.comicsAnswers[8]['points'] = 500
+    for (let index in cPoints) {
+      this.comicsAnswers[index]['points'] = cPoints[index]
+    }
   }
 }
 
