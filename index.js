@@ -304,7 +304,7 @@ app.get('/api/get-comics-answers', (req, res) => {
   let players, answers
 
   players = plList.players
-  answers = riddler.getComicsAnswers(players)
+  answers = riddler.getComicsAnswers()
 
   return res.json(answers)
 })
@@ -332,12 +332,22 @@ app.get('/api/start-comics-vote', (req, res) => {})
 
 
 app.get('/api/get-comics-vote-results', (req, res) => {
-  let result = riddler.calcVoteResult()
+  let result = riddler.calculateComicsVotes()
+  utils.shuffleArray(result)
   return res.json(result)
 })
 
 
-app.get('/api/template', (req, res) => {})
+app.get('/api/check-admin', (req, res) => {
+  let isAdmin = utils.checkAdmin(ipaddress, req.ip)
+  return res.json(isAdmin)
+})
+
+
+
+app.get('/api/template', (req, res) => {
+  return res.json(true)
+})
 
 
 
