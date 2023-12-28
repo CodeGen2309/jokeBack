@@ -367,6 +367,7 @@ let devInitGame = () => {
     tmPlayer.firstAnswer = null
     tmPlayer.secondAnswer = null
 
+
     riddler.setAnswer(pl, tmPlayer, 'Пиздани')
     riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
 
@@ -404,7 +405,8 @@ let setupBotVoters = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-// plList.addBots(15)
+plList.addBots(15)
+plList.addRandomAutoPoints()
 // riddler.setupQuestions(plList.players)
 
 // devInitGame()

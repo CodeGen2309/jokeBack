@@ -184,6 +184,13 @@ const playerList = {
   },
 
 
+  addRandomAutoPoints () {
+    for ( let pl in this.players ) {
+      this.players[pl]['points'] = utils.getRandomInt(1000, 9000)
+    }
+  },
+
+
   resetRoundPoints () {
     let plKeys, tmPlayer
 
