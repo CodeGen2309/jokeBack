@@ -372,7 +372,8 @@ let devInitGame = () => {
     riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
 
     riddler.setComicsAnswer(
-      pl, tmPlayer.avatar, tmPlayer.nickname, tmPlayer.comicsAnswer
+      pl, tmPlayer.avatar, tmPlayer.nickname, 
+      tmPlayer.comicsAnswer
     )
   }
 }
@@ -407,11 +408,11 @@ let setupBotVoters = () => {
 app.listen(PORT)
 plList.addBots(15)
 plList.addRandomAutoPoints()
-// riddler.setupQuestions(plList.players)
+riddler.setupQuestions(plList.players)
 
-// devInitGame()
-// setupBotVoters()
-// riddler.calculateComicsVotes()
+devInitGame()
+setupBotVoters()
+riddler.calculateComicsVotes()
 
 
 // Log dev data
