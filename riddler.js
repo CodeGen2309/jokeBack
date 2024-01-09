@@ -1,5 +1,5 @@
 import fs from 'fs'
-import questions from './mocks/questions.js'
+import questions from './mocks/newQuestions.js'
 import cPoints from './mocks/comicsPoints.js'
 import utils from './utils.js';
 

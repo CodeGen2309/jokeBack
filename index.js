@@ -406,13 +406,13 @@ let setupBotVoters = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-plList.addBots(15)
-plList.addRandomAutoPoints()
-riddler.setupQuestions(plList.players)
+// plList.addBots(15)
+// plList.addRandomAutoPoints()
+// riddler.setupQuestions(plList.players)
 
-devInitGame()
-setupBotVoters()
-riddler.calculateComicsVotes()
+// devInitGame()
+// setupBotVoters()
+// riddler.calculateComicsVotes()
 
 
 // Log dev data
