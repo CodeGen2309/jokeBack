@@ -177,14 +177,12 @@ app.get('/api/finish-round', (req, res) => {
 })
 
 
-
 app.get('/api/set-vote', (req, res) => {
   let answer, questID, playerID,
   points
 
   answer = req.query.answer
   questID = manager.getVotedQuest()
-  points = manager.currRound.pointsForVote
 
   playerID = riddler.getPlayerID(questID, answer)
   plList.setPlayerVoted(req.ip)
@@ -245,7 +243,6 @@ app.get('/api/set-quest-for-vote', (req, res) => {
 })
 
 
-
 app.get('/api/auto-answer', (req, res) => {
   let players, tmPlayer, isAll
 
@@ -271,6 +268,7 @@ app.get('/api/auto-answer', (req, res) => {
   if (isAll) { manager.startVoting() }
   return res.json(players)
 })
+
 
 app.get('/api/get-comics', (req, res) => {
   let comics = riddler.getComicsQuest()
@@ -406,9 +404,9 @@ let setupBotVoters = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-// plList.addBots(15)
-// plList.addRandomAutoPoints()
-// riddler.setupQuestions(plList.players)
+plList.addBots(10)
+plList.addRandomAutoPoints()
+riddler.setupQuestions(plList.players)
 
 // devInitGame()
 // setupBotVoters()

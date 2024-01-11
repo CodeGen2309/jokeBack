@@ -181,7 +181,7 @@ const riddler = {
     ptsPerVote = 0
 
     if (votersCount > 0) {
-      ptsPerVote = roundPoints / votersCount
+      ptsPerVote = Math.round(roundPoints / votersCount)
     }
     
 
