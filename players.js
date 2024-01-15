@@ -163,6 +163,9 @@ const playerList = {
       nickname = this.getFreeNickName()
 
       tmPlayer = this.createPlayer(tmIP, nickname)
+      
+      tmPlayer.firstAnswer = 'Пиздани =)'
+      tmPlayer.secondAnswer = 'Что нибудь =))))'
       tmPlayer.comicsAnswer = this.answers.pop()
 
       this.players[tmIP] = tmPlayer

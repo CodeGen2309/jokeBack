@@ -13,16 +13,12 @@ const riddler = {
   comicsQuest: null,
   comicsAnswers: [],
 
-  shuffleArray (arr) {
-    arr.sort(() => Math.random() - 0.5);
-  },
-
 
   setupQuestions (plList) {
     let plKeys, tempQuest
 
     plKeys = Object.keys(plList)
-    this.shuffleArray(this.questions)
+    utils.shuffleArray(this.questions)
 
     plKeys.forEach((key, index, arr) => {
       tempQuest = this.createQuest(key, index, arr, plList)
@@ -43,7 +39,7 @@ const riddler = {
       comicsLinks.push(`/img/comicRound/${cms}`)
     }
     
-    this.shuffleArray(comicsLinks)
+    utils.shuffleArray(comicsLinks)
     this.comicsQuest = comicsLinks.pop()
     return comicsLinks
   },
