@@ -349,50 +349,41 @@ app.get('/api/template', (req, res) => {
 
 
 // setup Routes ------------------
-
-
 let devStartGame = () => {
-  let players, tmPlayer
+  let points, playersArr
+  
+  riddler.setupQuestions(plList.players)
+  playersArr = Object.keys(plList.players)
+  points = manager.calcPointsForVote(playersArr.length)
 
-  players = plList.players
-
-  for (let pl in players) {
-    if ( pl.includes('ffff')) { continue }    
-    tmPlayer = players[pl]
-
-    riddler.setComicsAnswer(
-      pl, tmPlayer.avatar, tmPlayer.nickname, 
-      tmPlayer.comicsAnswer
-    )
-  }
-
-  riddler.setupQuestions(players)
-  plList.addRandomAutoPoints()
   manager.startGame()
 }
 
 
-let addBotVoters = () => {
-  let votersArr, tempVoter,
-  votersCount
+let devAutoAnswer = () => {
+  let players, tmPlayer, isAll
 
-  votersArr = []
-  votersCount = utils.getRandomInt(1, 12)
-  for ( let i = 0; i < votersCount; i++ ) {
-    tempVoter = plList.createRandomVoter()
-    votersArr.push(tempVoter)
+  players = plList.players
+
+  for (let pl in players) {
+    if ( pl.includes('ffff')) { continue }
+
+    
+    tmPlayer = players[pl]
+    tmPlayer.firstAnswer = null
+    tmPlayer.secondAnswer = null
+
+    riddler.setAnswer(pl, tmPlayer, 'Пиздани')
+    riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
+
+    riddler.setComicsAnswer(
+      pl, tmPlayer.avatar, tmPlayer.nickname, tmPlayer.comicsAnswer
+    )
   }
 
-  return votersArr
-}
-
-
-let setupBotVoters = () => {
-  let comicsarr = riddler.comicsAnswers
-
-  for (let cms of comicsarr) {
-    cms.voters = addBotVoters()
-  }
+  isAll = riddler.checkAllAnswers()
+  if (isAll) { manager.startVoting() }
+  return players
 }
 
 
@@ -400,8 +391,9 @@ let setupBotVoters = () => {
 // Run server!!!!---------------
 app.listen(PORT)
 plList.addBots(10)
+devStartGame()
+devAutoAnswer()
 
-// devStartGame()
 // setupBotVoters()
 // riddler.calculateComicsVotes()
 
