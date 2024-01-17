@@ -391,8 +391,8 @@ let devAutoAnswer = () => {
 // Run server!!!!---------------
 app.listen(PORT)
 plList.addBots(10)
-devStartGame()
-devAutoAnswer()
+// devStartGame()
+// devAutoAnswer()
 
 // setupBotVoters()
 // riddler.calculateComicsVotes()
