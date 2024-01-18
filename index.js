@@ -355,7 +355,6 @@ let devStartGame = () => {
   riddler.setupQuestions(plList.players)
   playersArr = Object.keys(plList.players)
   points = manager.calcPointsForVote(playersArr.length)
-
   manager.startGame()
 }
 
@@ -368,14 +367,8 @@ let devAutoAnswer = () => {
   for (let pl in players) {
     if ( pl.includes('ffff')) { continue }
 
-    
+
     tmPlayer = players[pl]
-    tmPlayer.firstAnswer = null
-    tmPlayer.secondAnswer = null
-
-    riddler.setAnswer(pl, tmPlayer, 'Пиздани')
-    riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
-
     riddler.setComicsAnswer(
       pl, tmPlayer.avatar, tmPlayer.nickname, tmPlayer.comicsAnswer
     )
@@ -391,8 +384,8 @@ let devAutoAnswer = () => {
 // Run server!!!!---------------
 app.listen(PORT)
 plList.addBots(10)
+devAutoAnswer()
 // devStartGame()
-// devAutoAnswer()
 
 // setupBotVoters()
 // riddler.calculateComicsVotes()
@@ -400,5 +393,5 @@ plList.addBots(10)
 
 // Log dev data
 console.log(fullAddress);
-console.log(manager);
+// console.log(manager);
 // console.log(riddler.comicsAnswers);

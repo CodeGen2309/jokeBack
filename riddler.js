@@ -152,7 +152,6 @@ const riddler = {
 
   voteForComicsAnswer (answerID, voter) {
     let currAnswer = this.comicsAnswers[answerID]
-
     currAnswer.voters.push(voter)
   },
 
