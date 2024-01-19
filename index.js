@@ -349,12 +349,8 @@ app.get('/api/template', (req, res) => {
 
 
 // setup Routes ------------------
-let devStartGame = () => {
-  let points, playersArr
-  
+let devStartGame = () => {  
   riddler.setupQuestions(plList.players)
-  playersArr = Object.keys(plList.players)
-  points = manager.calcPointsForVote(playersArr.length)
   manager.startGame()
 }
 
@@ -367,8 +363,14 @@ let devAutoAnswer = () => {
   for (let pl in players) {
     if ( pl.includes('ffff')) { continue }
 
-
+    
     tmPlayer = players[pl]
+    tmPlayer.firstAnswer = null
+    tmPlayer.secondAnswer = null
+
+    riddler.setAnswer(pl, tmPlayer, 'Пиздани')
+    riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
+
     riddler.setComicsAnswer(
       pl, tmPlayer.avatar, tmPlayer.nickname, tmPlayer.comicsAnswer
     )
@@ -383,15 +385,13 @@ let devAutoAnswer = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-plList.addBots(10)
+plList.addBots(15)
+riddler.setupQuestions(plList.players)
 devAutoAnswer()
-// devStartGame()
+plList.addRandomAutoPoints()
 
-// setupBotVoters()
-// riddler.calculateComicsVotes()
 
 
 // Log dev data
+console.log(riddler.questTable);
 console.log(fullAddress);
-// console.log(manager);
-// console.log(riddler.comicsAnswers);
