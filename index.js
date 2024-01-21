@@ -24,9 +24,13 @@ app.use(express.static(publicFolder))
 
 
 // setUp mocks ---------
-utils.createQr(`./public/img/qr.jpg`, `http://${ipaddress}:8080/`)
+utils.createQr(
+  `./public/img/qr.jpg`, `http://${ipaddress}:8080/`
+)
+
 plList.setIP(ipaddress, PORT)
 plList.initAvatars()
+
 // setUp mocks ---------
 
 
@@ -206,8 +210,13 @@ app.get('/api/get-vote-result', async (req, res) => {
 
   firstPlayer = plList.getPlayerByID(fPlayerID)
   secondPlayer = plList.getPlayerByID(sPlayerID)
-  firstVoters = plList.getPlayersIcons(quest.firstAnswer.voters)
-  secondVoters = plList.getPlayersIcons(quest.secondAnswer.voters)
+  firstVoters = plList.getPlayersIcons(
+    quest.firstAnswer.voters
+  )
+
+  secondVoters = plList.getPlayersIcons(
+    quest.secondAnswer.voters
+  )
 
   quest.firstAnswer.player = firstPlayer
   quest.firstAnswer.voters = firstVoters
@@ -259,7 +268,8 @@ app.get('/api/auto-answer', (req, res) => {
     riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
 
     riddler.setComicsAnswer(
-      pl, tmPlayer.avatar, tmPlayer.nickname, tmPlayer.comicsAnswer
+      pl, tmPlayer.avatar, tmPlayer.nickname, 
+      tmPlayer.comicsAnswer
     )
   }
 
@@ -313,19 +323,18 @@ app.get('/api/vote-comics-answer', (req, res) => {
 
   tmPlayer = plList.getPlayerByID(req.ip)
   tmPlayer.alreadyVoted = true
-  voter = {nickname: tmPlayer.nickname, avatar: tmPlayer.avatar}
 
-  answerID = req.query.answerID
-  answer = riddler.voteForComicsAnswer(answerID, voter)
+  voter = {
+    nickname: tmPlayer.nickname, avatar: tmPlayer.avatar
+  }
+
+  // answerID = req.query.answerID
+  // answer = riddler.voteForComicsAnswer(answerID, voter)
 
   isAll = plList.checkVotedPlayers()
-
+  console.log(req.query);
   return res.json(true)
 })
-
-
-
-app.get('/api/start-comics-vote', (req, res) => {})
 
 
 app.get('/api/get-comics-vote-results', (req, res) => {
@@ -339,7 +348,6 @@ app.get('/api/check-admin', (req, res) => {
   let isAdmin = utils.checkAdmin(ipaddress, req.ip)
   return res.json(isAdmin)
 })
-
 
 
 app.get('/api/template', (req, res) => {
@@ -372,7 +380,8 @@ let devAutoAnswer = () => {
     riddler.setAnswer(pl, tmPlayer, 'Что нибудь )))')
 
     riddler.setComicsAnswer(
-      pl, tmPlayer.avatar, tmPlayer.nickname, tmPlayer.comicsAnswer
+      pl, tmPlayer.avatar, tmPlayer.nickname, 
+      tmPlayer.comicsAnswer
     )
   }
 
@@ -393,5 +402,4 @@ plList.addRandomAutoPoints()
 
 
 // Log dev data
-console.log(riddler.questTable);
 console.log(fullAddress);
