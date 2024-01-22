@@ -197,18 +197,22 @@ const riddler = {
 
 
   checkAllAnswers () {
-    let checker = true
-
     for (let qst of this.questTable) {
-      if (!qst.isAnswered) { checker = false }
+      if (!qst.isAnswered) { return false }
     }
 
-    return checker
+    return true
   },
 
 
   getComicsAnswers () {
     return this.comicsAnswers
+  },
+
+
+  addComicsPoints (answerID, points) {
+    let answer = this.comicsAnswers[answerID]
+    answer.points += points
   },
 
 

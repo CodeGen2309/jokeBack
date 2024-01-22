@@ -319,20 +319,41 @@ app.get('/api/get-comics-answers', (req, res) => {
 
 app.get('/api/vote-comics-answer', (req, res) => {
   let tmPlayer, answerID, voter, answer,
+  gold, silver, bronze,
   isAll
 
-  tmPlayer = plList.getPlayerByID(req.ip)
+  // for test
+  let botsKeys = Object.keys(plList.players)
+  let botId = botsKeys[0]
+  // for test
+
+
+  tmPlayer = plList.getPlayerByID(botId)
   tmPlayer.alreadyVoted = true
 
   voter = {
     nickname: tmPlayer.nickname, avatar: tmPlayer.avatar
   }
 
+  gold = req.query.gold
+  riddler.voteForComicsAnswer(gold, voter)
+  riddler.addComicsPoints(gold, 3)
+
+  silver = req.query.silver
+  riddler.voteForComicsAnswer(silver, voter)
+  riddler.addComicsPoints(silver, 2)
+
+  bronze = req.query.bronze
+  riddler.voteForComicsAnswer(bronze, voter)
+  riddler.addComicsPoints(bronze, 1)
+
+
   // answerID = req.query.answerID
   // answer = riddler.voteForComicsAnswer(answerID, voter)
 
-  isAll = plList.checkVotedPlayers()
-  console.log(req.query);
+  // isAll = plList.checkVotedPlayers()
+  console.log(tmPlayer);
+  console.log(riddler.comicsAnswers);
   return res.json(true)
 })
 
