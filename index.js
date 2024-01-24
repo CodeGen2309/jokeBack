@@ -1,4 +1,4 @@
-import express, { json } from "express"
+import express from "express"
 import path from "path"
 import cors from "cors"
 import ip from "ip"
@@ -415,10 +415,10 @@ let devAutoAnswer = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-plList.addBots(15)
-riddler.setupQuestions(plList.players)
-devAutoAnswer()
-plList.addRandomAutoPoints()
+plList.addBots(7)
+// riddler.setupQuestions(plList.players)
+// devAutoAnswer()
+// plList.addRandomAutoPoints()
 
 
 
