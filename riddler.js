@@ -51,18 +51,21 @@ const riddler = {
 
 
   createQuest (key, index, arr, plList) {
-    let firstPlayer = plList[key]
-    let nextKey = arr[index + 1] || arr[0]
-    let secondPlayer = plList[nextKey]
+    let firstPlayer, secondPlayer, nextKey,
+    quest, questIndex
 
-    let quest = {
+    firstPlayer = plList[key]
+    nextKey = arr[index + 1] || arr[0]
+    secondPlayer = plList[nextKey]
+
+    quest = {
       text: this.questions.pop(),
       firstAnswer:  { player: key, text: '', voters: [] },
       secondAnswer: { player: nextKey, text: '', voters: [] },
       isAnswered: false, isVoted: false
     }
 
-    let questIndex = this.questTable.push(quest) - 1
+    questIndex = this.questTable.push(quest) - 1
 
     firstPlayer.firstQuest = questIndex
     secondPlayer.secondQuest = questIndex

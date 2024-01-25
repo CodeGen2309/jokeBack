@@ -123,7 +123,10 @@ app.get('/api/set-answer', (req, res) => {
   result = riddler.setAnswer(playerID, player, answer)
   isAll  = riddler.checkAllAnswers()
 
-  if (isAll) { manager.startVoting() }
+  if (isAll) { 
+    utils.shuffleArray(riddler.questTable)
+    manager.startVoting()
+  }
   
   res.json(result)
 })
@@ -406,8 +409,17 @@ let devAutoAnswer = () => {
     )
   }
 
+  for (let qst of riddler.questTable) {
+    qst.isAnswered = true
+  }
+
+  
   isAll = riddler.checkAllAnswers()
-  if (isAll) { manager.startVoting() }
+
+  if (isAll) {
+    utils.shuffleArray(riddler.questTable)
+    manager.startVoting()
+  }
   return players
 }
 
@@ -415,8 +427,8 @@ let devAutoAnswer = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-plList.addBots(7)
-// riddler.setupQuestions(plList.players)
+plList.addBots(5)
+// devStartGame()
 // devAutoAnswer()
 // plList.addRandomAutoPoints()
 
