@@ -382,9 +382,22 @@ app.get('/api/check-admin', (req, res) => {
 
 
 app.get('/api/add-comics-points', (req, res) => {
-  let users = req.users
+  let users, currUser, currPoints
 
-  console.log(users);
+  users = req.query
+
+  for (let item in users) {
+    currUser = item
+    currPoints = users[item]
+    plList.addPoints(currUser, Number(currPoints))
+  }
+
+  return res.json(true)
+})
+
+
+app.get('/api/start-comics-result', (req, res) => {
+  manager.startComicsResult()
   return res.json(true)
 })
 

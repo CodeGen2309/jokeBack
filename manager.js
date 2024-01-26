@@ -144,7 +144,10 @@ class manager {
   }
 
 
-  comicsResultsHandler (player, isAdmin) {}
+  comicsResultsHandler (player, isAdmin) {
+    if (isAdmin) { return 'leaderboard' }
+    return 'mscreenfocus'
+  }
 
 
 // handlers ===============
@@ -230,6 +233,10 @@ class manager {
     return true
   }
 
+
+  startComicsResult () {
+    this.currStage = this.stages.comicsResults
+  }
 
   showLeaderBoard () {}
 
