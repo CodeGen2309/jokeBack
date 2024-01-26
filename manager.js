@@ -207,7 +207,7 @@ class manager {
     return this.currRound.nextRound
   }
 
-  
+
   finishRound () {
     this.currStage = this.stages.endRound
     return true
@@ -217,6 +217,7 @@ class manager {
   startNextRound () {
     if (this.currRound.nextRound == 2) { 
       this.currRound = this.rounds.secondRound
+      console.log('ROUND 2!!!');
       this.startQuest()
     }
 

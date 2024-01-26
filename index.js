@@ -310,20 +310,31 @@ app.get('/api/set-comics-answer', (req, res) => {
 })
 
 
-app.get('/api/get-comics-answers', (req, res) => {
-  let players, answers
+app.get('/api/start-comics-voting', (req, res) => {
+  manager.startComicsVoting()
+  return res.json(true)
+})
 
-  players = plList.players
+
+
+app.get('/api/get-comics-answers', (req, res) => {
+  let answers, ownAnswer
+
   answers = riddler.getComicsAnswers()
+
+  for (let item of answers) {
+    ownAnswer = item.playerID == req.ip
+    if ( ownAnswer) { item.hidden = true }
+    else { item.hidden = false }
+  }
 
   return res.json(answers)
 })
 
 
 app.get('/api/vote-comics-answer', (req, res) => {
-  let tmPlayer, answerID, voter, answer,
-  gold, silver, bronze,
-  isAll
+  let tmPlayer, voter, answer,
+  gold, silver, bronze, isAll
 
   // for test
   let botsKeys = Object.keys(plList.players)
@@ -331,7 +342,7 @@ app.get('/api/vote-comics-answer', (req, res) => {
   // for test
 
 
-  tmPlayer = plList.getPlayerByID(botId)
+  tmPlayer = plList.getPlayerByID(req.ip)
   tmPlayer.alreadyVoted = true
 
   voter = {
@@ -350,13 +361,9 @@ app.get('/api/vote-comics-answer', (req, res) => {
   riddler.voteForComicsAnswer(bronze, voter)
   riddler.addComicsPoints(bronze, 1)
 
-
-  // answerID = req.query.answerID
-  // answer = riddler.voteForComicsAnswer(answerID, voter)
-
   // isAll = plList.checkVotedPlayers()
-  console.log(tmPlayer);
-  console.log(riddler.comicsAnswers);
+
+  // if (isAll) { manager.finishRound() }
   return res.json(true)
 })
 
@@ -371,6 +378,14 @@ app.get('/api/get-comics-vote-results', (req, res) => {
 app.get('/api/check-admin', (req, res) => {
   let isAdmin = utils.checkAdmin(ipaddress, req.ip)
   return res.json(isAdmin)
+})
+
+
+app.get('/api/add-comics-points', (req, res) => {
+  let users = req.users
+
+  console.log(users);
+  return res.json(true)
 })
 
 
@@ -427,10 +442,12 @@ let devAutoAnswer = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-plList.addBots(5)
+// plList.addBots(14)
 // devStartGame()
 // devAutoAnswer()
 // plList.addRandomAutoPoints()
+// manager.startNextRound()
+// manager.startNextRound()
 
 
 
