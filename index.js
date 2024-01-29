@@ -124,7 +124,7 @@ app.get('/api/set-answer', (req, res) => {
   isAll  = riddler.checkAllAnswers()
 
   if (isAll) { 
-    utils.shuffleArray(riddler.questTable)
+    // utils.shuffleArray(riddler.questTable)
     manager.startVoting()
   }
   
@@ -370,7 +370,7 @@ app.get('/api/vote-comics-answer', (req, res) => {
 
 app.get('/api/get-comics-vote-results', (req, res) => {
   let result = riddler.calculateComicsVotes()
-  utils.shuffleArray(result)
+  // utils.shuffleArray(result)
   return res.json(result)
 })
 
@@ -445,7 +445,7 @@ let devAutoAnswer = () => {
   isAll = riddler.checkAllAnswers()
 
   if (isAll) {
-    utils.shuffleArray(riddler.questTable)
+    // utils.shuffleArray(riddler.questTable)
     manager.startVoting()
   }
   return players
@@ -455,7 +455,7 @@ let devAutoAnswer = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-// plList.addBots(14)
+plList.addBots(14)
 // devStartGame()
 // devAutoAnswer()
 // plList.addRandomAutoPoints()
