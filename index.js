@@ -213,6 +213,7 @@ app.get('/api/get-vote-result', async (req, res) => {
 
   firstPlayer = plList.getPlayerByID(fPlayerID)
   secondPlayer = plList.getPlayerByID(sPlayerID)
+  
   firstVoters = plList.getPlayersIcons(
     quest.firstAnswer.voters
   )
@@ -456,8 +457,8 @@ let devAutoAnswer = () => {
 // Run server!!!!---------------
 app.listen(PORT)
 plList.addBots(14)
-// devStartGame()
-// devAutoAnswer()
+devStartGame()
+devAutoAnswer()
 // plList.addRandomAutoPoints()
 // manager.startNextRound()
 // manager.startNextRound()
