@@ -67,7 +67,9 @@ class manager {
         'nextRound': 3,
       },
 
-      'thirdRound': {},
+      'thirdRound': {
+        'nextRound': 'ENDGAME'
+      },
     }
 
 
