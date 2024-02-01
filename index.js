@@ -115,6 +115,8 @@ app.get('/api/get-curr-quest', (req, res) => {
 
 
 app.get('/api/set-answer', (req, res) => {
+  console.log('NEW ANSWER!');
+
   let playerID, player, answer, result, isAll
 
   playerID = req.ip
@@ -124,7 +126,6 @@ app.get('/api/set-answer', (req, res) => {
   isAll  = riddler.checkAllAnswers()
 
   if (isAll) { 
-    // utils.shuffleArray(riddler.questTable)
     manager.startVoting()
   }
   
@@ -184,6 +185,8 @@ app.get('/api/finish-round', (req, res) => {
 
 
 app.get('/api/set-vote', (req, res) => {
+  console.log('NEW VOTE!!');
+
   let answer, questID, playerID,
   points
 
@@ -456,9 +459,9 @@ let devAutoAnswer = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-plList.addBots(14)
-devStartGame()
-devAutoAnswer()
+plList.addBots(5)
+// devStartGame()
+// devAutoAnswer()
 // plList.addRandomAutoPoints()
 // manager.startNextRound()
 // manager.startNextRound()
