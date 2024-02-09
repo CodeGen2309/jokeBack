@@ -70,12 +70,12 @@ const playerList = {
   },
 
 
-  createPlayer (ipaddress, nickname) {
+  createPlayer (id, nickname) {
     let avatar  = utils.getRandomElem(this.avatars)
     let background = this.getRandomElem(this.colors)
 
     return {
-      avatar, nickname, background, ipaddress,
+      avatar, nickname, background, id,
       firstQuest: null, secondQuest: null,
       firstAnswer: null, secondAnswer: null, 
       points: 0, alreadyVoted: false,
@@ -94,19 +94,20 @@ const playerList = {
   },
 
 
-  addPlayer (ipaddress, nickname) {
+  addPlayer (id, nickname) {
     let inGame, player, noNickname
 
-    inGame = this.checkPlayer(ipaddress)
+    inGame = this.checkPlayer(id)
     noNickname = nickname == undefined
     
     if (inGame) { return false }
     if (noNickname) { nickname = this.getFreeNickName() }
 
     
-    player = this.createPlayer(ipaddress, nickname)
-    this.players[ipaddress] = player
+    player = this.createPlayer(id, nickname)
+    this.players[id] = player
 
+    console.log(this.players);
     return player
   },
 

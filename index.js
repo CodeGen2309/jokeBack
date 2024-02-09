@@ -4,6 +4,10 @@ import cors from "cors"
 import ip from "ip"
 
 
+import cookieParser from "cookie-parser"
+import cookie from "cookie-session"
+
+
 import utils from "./utils.js"
 import plList from "./players.js"
 import manager from "./manager.js"
@@ -19,8 +23,16 @@ const app = express()
 const publicFolder = path.resolve('./public')
 
 app.use( cors() )
-app.use(express.static(publicFolder))
+app.use( express.static(publicFolder) )
+
 // Create App ------------
+
+// module setup ----------
+app.utils = utils
+app.plList = plList
+app.manager = manager
+app.riddler = riddler
+// module setup ----------
 
 
 // setUp mocks ---------
@@ -33,19 +45,24 @@ plList.initAvatars()
 
 // setUp mocks ---------
 
+let checkcer = 0
 
 // setup Routes ------------------
 app.get('/api/get-nickname', (req, res) => {
   let nick = plList.getFreeNickName()
-  res.json(nick)
+  res.json({nick})
 })
 
 
 app.get('/api/add-player', (req, res) => {
-  let ip = req.ip
   let nickname = req.query.nickname
-  let player = plList.addPlayer(ip, nickname)
+  let id = utils.getRandomInt(0, 99999)
 
+  while (plList.players[id] != undefined) {
+    id = utils.getRandomInt(0, 99999)
+  }
+
+  let player = plList.addPlayer(id, nickname)
   res.json(player)
 })
 
@@ -57,17 +74,21 @@ app.get('/api/get-players', (req, res) => {
 
 
 app.get('/api/check-player', (req, res) => {
-  let ipaddress = req.ip
-  let inGame = plList.checkPlayer(ipaddress)
+  let id = req.query.playerID
+  let inGame = plList.checkPlayer(id)
   res.json(inGame)
 })
 
 
 app.get('/api/get-curr-screen', (req, res) => {
   let isAdmin = utils.checkAdmin(ipaddress, req.ip)
-  let player = plList.getPlayer(req.ip)
-
+  let player = plList.getPlayerByID(req.query.playerID)
+  console.log(req.query);
   let screen = manager.getCurrScreen(player, isAdmin)
+
+  console.log('CURR SCREEEN');
+  console.log({isAdmin, screen, player});
+
   res.json(screen)
 })
 
@@ -108,7 +129,7 @@ app.get('/api/start-new-round', (req, res) => {
 app.get('/api/get-curr-quest', (req, res) => {
   let player, currQuest
 
-  player = plList.getPlayer(req.ip)
+  player = plList.getPlayer(req.query.playerID)
   currQuest = riddler.getCurrQuestion(player)
   res.json(currQuest)
 })
@@ -119,7 +140,7 @@ app.get('/api/set-answer', (req, res) => {
 
   let playerID, player, answer, result, isAll
 
-  playerID = req.ip
+  playerID = req.query.playerID
   player = plList.getPlayer(playerID)
   answer = req.query.answer
   result = riddler.setAnswer(playerID, player, answer)
@@ -155,7 +176,7 @@ app.get('/api/get-quest-for-vote', (req, res) => {
     quest: false, firstPlayer: false, secondPlayer: false,
   }
 
-  playerID = req.ip
+  playerID = req.query.playerID
   questID = manager.getVotedQuest()
   endOfRound = questID == undefined
 
@@ -194,8 +215,8 @@ app.get('/api/set-vote', (req, res) => {
   questID = manager.getVotedQuest()
 
   playerID = riddler.getPlayerID(questID, answer)
-  plList.setPlayerVoted(req.ip)
-  riddler.voteForAnswer(questID, answer, req.ip)
+  plList.setPlayerVoted(req.query.playerID)
+  riddler.voteForAnswer(questID, answer, req.query.playerID)
 
   res.json(true)
 })
@@ -264,9 +285,6 @@ app.get('/api/auto-answer', (req, res) => {
   players = plList.players
 
   for (let pl in players) {
-    if ( pl.includes('ffff')) { continue }
-
-    
     tmPlayer = players[pl]
     tmPlayer.firstAnswer = null
     tmPlayer.secondAnswer = null
@@ -296,13 +314,13 @@ app.get('/api/set-comics-answer', (req, res) => {
   let player, answer, isAll, nickname,
   avatar
 
-  player = plList.getPlayer(req.ip)
+  player = plList.getPlayer(req.query.playerID)
   nickname = player.nickname
   avatar = player.avatar
   answer = req.query.answer
   player.comicsAnswer = answer
 
-  riddler.setComicsAnswer(req.ip, avatar, nickname, answer)
+  riddler.setComicsAnswer(req.query.playerID, avatar, nickname, answer)
   isAll  = plList.checkComicsAnswers()
 
   if (isAll) {
@@ -327,7 +345,7 @@ app.get('/api/get-comics-answers', (req, res) => {
   answers = riddler.getComicsAnswers()
 
   for (let item of answers) {
-    ownAnswer = item.playerID == req.ip
+    ownAnswer = item.playerID == req.query.playerID
     if ( ownAnswer) { item.hidden = true }
     else { item.hidden = false }
   }
@@ -346,7 +364,7 @@ app.get('/api/vote-comics-answer', (req, res) => {
   // for test
 
 
-  tmPlayer = plList.getPlayerByID(req.ip)
+  tmPlayer = plList.getPlayerByID(req.query.playerID)
   tmPlayer.alreadyVoted = true
 
   voter = {
@@ -469,4 +487,4 @@ plList.addBots(5)
 
 
 // Log dev data
-console.log(fullAddress);
+// console.log(fullAddress);
