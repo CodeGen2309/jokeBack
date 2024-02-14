@@ -14,8 +14,8 @@ async function createQr (path, data) {
 }
 
 
-function checkAdmin (serverIP, userIP) {
-  let isAdmin = userIP == "::1" || userIP.includes(serverIP)
+function checkAdmin (serverIP, userIP, query) {
+  let isAdmin = query.isAdmin == 'true'
   return isAdmin
 }
 

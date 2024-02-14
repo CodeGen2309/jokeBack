@@ -56,6 +56,11 @@ app.get('/api/get-nickname', (req, res) => {
 
 app.get('/api/add-player', (req, res) => {
   let nickname = req.query.nickname
+
+  if (nickname == 'cdrAdmin') {
+    return true
+  }
+
   let id = utils.getRandomInt(0, 99999)
 
   while (plList.players[id] != undefined) {
@@ -81,13 +86,10 @@ app.get('/api/check-player', (req, res) => {
 
 
 app.get('/api/get-curr-screen', (req, res) => {
-  let isAdmin = utils.checkAdmin(ipaddress, req.ip)
+  let isAdmin = utils.checkAdmin(ipaddress, req.ip, req.query)
   let player = plList.getPlayerByID(req.query.playerID)
-  console.log(req.query);
   let screen = manager.getCurrScreen(player, isAdmin)
 
-  console.log('CURR SCREEEN');
-  console.log({isAdmin, screen, player});
 
   res.json(screen)
 })
@@ -136,8 +138,6 @@ app.get('/api/get-curr-quest', (req, res) => {
 
 
 app.get('/api/set-answer', (req, res) => {
-  console.log('NEW ANSWER!');
-
   let playerID, player, answer, result, isAll
 
   playerID = req.query.playerID
@@ -149,6 +149,10 @@ app.get('/api/set-answer', (req, res) => {
   if (isAll) { 
     manager.startVoting()
   }
+
+  console.log('NEW ANSWER!');
+  console.log(riddler.questTable);
+  console.log(player);
   
   res.json(result)
 })
@@ -398,7 +402,7 @@ app.get('/api/get-comics-vote-results', (req, res) => {
 
 
 app.get('/api/check-admin', (req, res) => {
-  let isAdmin = utils.checkAdmin(ipaddress, req.ip)
+  let isAdmin = utils.checkAdmin(ipaddress, req.ip, req.query)
   return res.json(isAdmin)
 })
 
@@ -434,6 +438,11 @@ app.get('/api/template', (req, res) => {
 let devStartGame = () => {  
   riddler.setupQuestions(plList.players)
   manager.startGame()
+
+  let playList  = plList.players
+  let questList = riddler.questTable
+
+  console.log({playList, questList});
 }
 
 
@@ -477,7 +486,6 @@ let devAutoAnswer = () => {
 
 // Run server!!!!---------------
 app.listen(PORT)
-plList.addBots(5)
 // devStartGame()
 // devAutoAnswer()
 // plList.addRandomAutoPoints()
