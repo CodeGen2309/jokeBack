@@ -220,8 +220,7 @@ const riddler = {
 
 
   calculateComicsVotes () {
-    let currAns, tempVote, voters,
-    votersCount
+    let currAns, isEnded
 
     // calc votersCount
     for (let ans in this.comicsAnswers) {
@@ -235,6 +234,9 @@ const riddler = {
     })
 
     for (let index in cPoints) {
+      isEnded = this.comicsAnswers[index] == undefined
+      if ( isEnded ) { break }
+
       this.comicsAnswers[index]['points'] = cPoints[index]
     }
 

@@ -342,6 +342,21 @@ app.get('/api/start-comics-voting', (req, res) => {
 })
 
 
+app.get('/api/start-voting', (req, res) => {
+  let currStage, voteStage
+
+  currStage = manager.currStage
+  voteStage = manager.stages.voteStage
+
+  if (currStage != voteStage) {
+    manager.startVoting()
+    return res.json(true)
+  }
+
+  return res.json(false)
+})
+
+
 
 app.get('/api/get-comics-answers', (req, res) => {
   let answers, ownAnswer
