@@ -194,7 +194,12 @@ app.get('/api/get-quest-for-vote', (req, res) => {
   spID = quest.secondAnswer.player
 
   isPlayerAnswered = fpID == playerID || spID == playerID
-  if (isPlayerAnswered) { return res.json(falseQuest) }
+
+  if (isPlayerAnswered) {
+    plList.setPlayerVoted(fpID)
+    plList.setPlayerVoted(spID)
+    return res.json(falseQuest)
+  }
 
   firstPlayer = plList.getPlayerByID(fpID)
   secondPlayer = plList.getPlayerByID(spID)
@@ -210,10 +215,8 @@ app.get('/api/finish-round', (req, res) => {
 
 
 app.get('/api/set-vote', (req, res) => {
-  console.log('NEW VOTE!!');
-
   let answer, questID, playerID,
-  points
+  points, isAll
 
   answer = req.query.answer
   questID = manager.getVotedQuest()
@@ -402,9 +405,10 @@ app.get('/api/vote-comics-answer', (req, res) => {
   riddler.voteForComicsAnswer(bronze, voter)
   riddler.addComicsPoints(bronze, 1)
 
-  // isAll = plList.checkVotedPlayers()
+  riddler.calculateComicsVotes()
+  isAll = plList.checkVotedPlayers()
+  if (isAll) { manager.finishRound() }
 
-  // if (isAll) { manager.finishRound() }
   return res.json(true)
 })
 
