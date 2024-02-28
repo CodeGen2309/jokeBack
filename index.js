@@ -150,10 +150,6 @@ app.get('/api/set-answer', (req, res) => {
     manager.startVoting()
   }
 
-  console.log('NEW ANSWER!');
-  console.log(riddler.questTable);
-  console.log(player);
-  
   res.json(result)
 })
 
@@ -406,8 +402,11 @@ app.get('/api/vote-comics-answer', (req, res) => {
   riddler.addComicsPoints(bronze, 1)
 
   riddler.calculateComicsVotes()
+
   isAll = plList.checkVotedPlayers()
   if (isAll) { manager.finishRound() }
+
+
 
   return res.json(true)
 })
